@@ -1,0 +1,19 @@
+{
+  "name": "transferwise-webhook",
+  "version": "1.0.0",
+  "description": "An express server to handle transferwise webhook calls and make transferwise API calls",
+  "main": "app/index.js",
+  "scripts": {
+    "start": "node ./app/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "stevenc4",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "convict": "^5.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2"
+  }
+}
