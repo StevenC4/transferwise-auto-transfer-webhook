@@ -6,7 +6,7 @@ const port = config.get('port');
 /**
  * Create HTTP server
  */
-console.log(`Starting ${config.get('appName')} on port ${port}`);
+console.log(`Starting ${config.get('appName')} on port ${port} in ${config.get('env')} environment`);
 
 const httpServer = http.createServer(server);
 

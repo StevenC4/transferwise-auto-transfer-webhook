@@ -1,4 +1,5 @@
 const convict = require('convict');
+const path = require('path');
 
 const config = convict({
 	appName: {
@@ -22,6 +23,12 @@ const config = convict({
 			format: Array,
 			default: ['Content-Type']
 		}
+	},
+	env: {
+		doc: 'The environment to run this project in',
+		format: String,
+		default: 'prod',
+		env: 'APP_ENV'
 	},
 	express: {
 		trustProxy: {
@@ -82,6 +89,11 @@ const config = convict({
 		}
 	}
 });
+
+const env = config.get('env');
+if (env === 'dev') {
+	config.loadFile(path.resolve(__dirname, './dev.json'));
+}
 
 config.validate({allowed: 'strict'});
 
