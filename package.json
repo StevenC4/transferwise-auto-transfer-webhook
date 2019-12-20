@@ -10,6 +10,8 @@
   "author": "stevenc4",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^6.10.2",
+    "ajv-merge-patch": "^4.1.0",
     "body-parser": "^1.19.0",
     "convict": "^5.2.0",
     "cors": "^2.8.5",

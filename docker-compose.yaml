@@ -1,0 +1,17 @@
+version: "2.3"
+services:
+  transferwise-webhook:
+    container_name: transferwise-webhook
+    build: .
+    image: transferwise-webhook:latest
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    expose:
+      - "8121"
+
+networks:
+  default:
+    external:
+      name: ${DOCKER_NETWORK_NAME}

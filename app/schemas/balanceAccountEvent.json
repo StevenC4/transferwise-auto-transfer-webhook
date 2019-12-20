@@ -1,0 +1,55 @@
+{
+    "$id": "balanceAccountEvent.json#",
+    "$merge": {
+        "source": {
+            "$refs": "event.json#"
+        },
+        "with": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "resource": {
+                            "type": "object"
+                        },
+                        "amount": {
+                            "type": "integer"
+                        },
+                        "currency": {
+                            "type": "string"
+                        },
+                        "post_transaction_balance_amount": {
+                            "type": "integer"
+                        },
+                        "occurred_at": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "transaction_type": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "resource",
+                        "amount",
+                        "currency",
+                        "post_transaction_balance_amount",
+                        "occurred_at",
+                        "transaction_type"
+                    ]
+                },
+                "event_type": {
+                    "type": "string",
+                    "const": "balances#credit"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "data",
+                "event_type"
+            ]
+        }
+    }
+}

@@ -1,11 +1,10 @@
 const convict = require('convict');
-const package = require('../package.json');
 
 const config = convict({
 	appName: {
 		doc: 'The application name',
 		format: String,
-		default: package.name
+		default: 'transferwise-webhook'
 	},
 	cors: {
 		origin: {
@@ -66,7 +65,7 @@ const config = convict({
 		publicKey: {
 			doc: 'The transferwise public key, base64 encoded',
 			format: String,
-			default: 'TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF2Tzh2WFYrSmtzQnpaQVk2R2hTTwpYZG9UQ2ZoWGFhaVorcUFidGFEQml1MkFHa0dWcG1FeWdGbVdQNExpOW01K05pODVCaFZ2Wk9vZE05ZXBnVzNGCmJBNVExU2V4dkFGMVBQalg0SnBNc3Rhay9RaEFnbDFxTVNxRWV2TDhjbVVlVGdjTXVWV0NKbWxnZTloN0IxQ1MKRDRydGxpbUdab3pHMzlyVUJEZzZRdDJLK1A0d0JmTGJsTDBrNEM0WVVkTG5wR1lFREl0aCtpOFhzUnBGbG9neApDQUZ5SDkra25Zc0RiUjQzVUo5c2h0YzQyWWJkNDBBZmloajhLbllLWHpjaHlRNDJhQzhhWi9oNWh5WjI4eVZ5Ck9qM1ZvczBWZEJJcy9nQXlKLzR5eVFGQ1hZdGU2NEk3c3NybGJHUmFjbzRuS0YzSG1hTmh4d3lLeUphZnoxOWUKSHdJREFRQUI='
+			default: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF2Tzh2WFYrSmtzQnpaQVk2R2hTTwpYZG9UQ2ZoWGFhaVorcUFidGFEQml1MkFHa0dWcG1FeWdGbVdQNExpOW01K05pODVCaFZ2Wk9vZE05ZXBnVzNGCmJBNVExU2V4dkFGMVBQalg0SnBNc3Rhay9RaEFnbDFxTVNxRWV2TDhjbVVlVGdjTXVWV0NKbWxnZTloN0IxQ1MKRDRydGxpbUdab3pHMzlyVUJEZzZRdDJLK1A0d0JmTGJsTDBrNEM0WVVkTG5wR1lFREl0aCtpOFhzUnBGbG9neApDQUZ5SDkra25Zc0RiUjQzVUo5c2h0YzQyWWJkNDBBZmloajhLbllLWHpjaHlRNDJhQzhhWi9oNWh5WjI4eVZ5Ck9qM1ZvczBWZEJJcy9nQXlKLzR5eVFGQ1hZdGU2NEk3c3NybGJHUmFjbzRuS0YzSG1hTmh4d3lLeUphZnoxOWUKSHdJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t'
 		}
 	}
 });

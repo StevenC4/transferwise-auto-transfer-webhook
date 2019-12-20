@@ -1,0 +1,31 @@
+{
+    "$id": "event.json#",
+    "type": "object",
+    "properties": {
+        "data": {
+            "type": "object"
+        },
+        "subscription_id": {
+            "type": "string",
+            "format": "UUID"
+        },
+        "event_type": {
+            "type": "string"
+        },
+        "schema_version": {
+            "type": "string"
+        },
+        "sent_at": {
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "data",
+        "subscription_id",
+        "event_type",
+        "schema_version",
+        "sent_at"
+    ]
+}
