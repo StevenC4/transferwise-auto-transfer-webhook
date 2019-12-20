@@ -14,13 +14,13 @@
                             "type": "object"
                         },
                         "amount": {
-                            "type": "integer"
+                            "type": "number"
                         },
                         "currency": {
                             "type": "string"
                         },
                         "post_transaction_balance_amount": {
-                            "type": "integer"
+                            "type": "number"
                         },
                         "occurred_at": {
                             "type": "string",
@@ -45,7 +45,6 @@
                     "const": "balances#credit"
                 }
             },
-            "additionalProperties": false,
             "required": [
                 "data",
                 "event_type"

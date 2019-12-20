@@ -11,16 +11,14 @@ const ajv = new Ajv({
 });
 require('ajv-merge-patch/keywords/merge')(ajv);
 
-console.log(ajv.getSchema('balanceAccountEvent.json#'));
-
 module.exports.balanceAccountEvent = (req, res, next) => {
     let error; 
     
-    const isValid = ajv.validate(balanceAccountEventSchema, req.body);
+    const isValid = ajv.validate('balanceAccountEvent.json#', req.body);
     if (!isValid) {
         console.error(ajv.errors);
         error = new Error('Invalid event format');
-    }    
+    }
 
     return next(error);
 };
