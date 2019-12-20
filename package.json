@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./app/index.js",
     "get-profile": "node ./scripts/getProfile.js",
-    "get-recipient-accounts": "node ./scripts/getRecipientAccounts.js",
+    "get-accounts": "node ./scripts/getAccounts.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "stevenc4",
