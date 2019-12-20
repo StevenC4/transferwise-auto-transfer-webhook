@@ -6,6 +6,10 @@ const validationMiddleware = require('./middleware/validation');
 router.post('/balance-deposit', [
     authorizationMiddleware.verifyEventSignature,
     validationMiddleware.balanceAccountEvent,
+    (req, res, next) => {
+        console.log(req.body);
+        next();
+    },
     (req, res, next) => res.send()
 ]);
 

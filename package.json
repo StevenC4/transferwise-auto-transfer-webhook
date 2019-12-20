@@ -5,6 +5,7 @@
   "main": "app/index.js",
   "scripts": {
     "start": "node ./app/index.js",
+    "get-profile-id": "node ./scripts/getProfileId.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "stevenc4",
@@ -16,6 +17,11 @@
     "convict": "^5.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "helmet": "^3.21.2"
+    "express-async-handler": "^1.1.4",
+    "helmet": "^3.21.2",
+    "isomorphic-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }

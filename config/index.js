@@ -62,6 +62,19 @@ const config = convict({
 		default: 8121
 	},
 	transferWise: {
+		api: {
+			baseUrl: {
+				doc: 'The base URL of the transferwise public API',
+				format: String,
+				default: 'https://api.transferwise.com'
+			},
+			key: {
+				doc: 'A personal transferwise API key',
+				format: String,
+				default: '',
+				env: 'TRANFERWISE_API_TOKEN'
+			}
+		},
 		publicKey: {
 			doc: 'The transferwise public key, base64 encoded',
 			format: String,

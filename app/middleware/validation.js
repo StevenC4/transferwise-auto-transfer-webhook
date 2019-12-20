@@ -9,6 +9,7 @@ const ajv = new Ajv({
     schemaId: "$id",
     schemas: [eventSchema, balanceAccountEventSchema]
 });
+
 require('ajv-merge-patch/keywords/merge')(ajv);
 
 module.exports.balanceAccountEvent = (req, res, next) => {
