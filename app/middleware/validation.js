@@ -12,6 +12,7 @@ const ajv = new Ajv({
 
 require('ajv-merge-patch/keywords/merge')(ajv);
 
+// https://api-docs.transferwise.com/#webhook-events-balance-deposit-event
 module.exports.balanceAccountEvent = (req, res, next) => {
     let error; 
     

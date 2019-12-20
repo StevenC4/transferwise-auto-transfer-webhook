@@ -69,6 +69,30 @@ const config = convict({
 		default: 8121
 	},
 	transferWise: {
+		account: {
+			source: {
+				currency: {
+					doc: 'The source currency for the quote',
+					format: String,
+					default: '',
+					env: 'TRANSFERWISE_SOURCE_CURRENCY'
+				}
+			},
+			target: {
+				currency: {
+					doc: 'The target currency for the quote',
+					format: String,
+					default: '',
+					env: 'TRANSFERWISE_TARGET_CURRENCY'
+				},
+				id: {
+					doc: 'The identifier of the target account',
+					format: 'integer',
+					default: '',
+					env: 'TRANSFERWISE_TARGET_ACCOUNT_ID'
+				}
+			}
+		},
 		api: {
 			baseUrl: {
 				doc: 'The base URL of the transferwise public API',
@@ -80,6 +104,14 @@ const config = convict({
 				format: String,
 				default: '',
 				env: 'TRANFERWISE_API_TOKEN'
+			}
+		},
+		profile: {
+			id: {
+				doc: 'The id of your profile',
+				format: String,
+				default: '',
+				env: 'TRANSFERWISE_PROFILE_ID'
 			}
 		},
 		publicKey: {
