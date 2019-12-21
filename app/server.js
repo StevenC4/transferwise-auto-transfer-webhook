@@ -3,6 +3,7 @@ const config = require('../config');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
+const logger = require('./lib/loggers/app');
 const requestLogger = require('./middleware/requestLogger');
 const routes = require('./routes');
 
@@ -17,7 +18,13 @@ app.set('trust proxy', config.get('express.trustProxy'));
 app.use(routes);
 
 // Default - catch all requests that do not match the route and 
-app.use((_req, res, _next) => {
+app.use((req, res, _next) => {
+    logger.error('Invalid route called', {
+        ip: req.ip,
+        ips: req.ips,
+        method: req.method,
+        originalUrl: req.originalUrl
+    });
     res.status(404);
     res.send();
 });
