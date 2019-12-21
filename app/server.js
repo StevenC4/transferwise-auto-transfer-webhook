@@ -3,15 +3,23 @@ const config = require('../config');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
+const requestLogger = require('./middleware/requestLogger');
 const routes = require('./routes');
 
 const app = express();
 
 app.use(cors(config.get('cors')));
 app.use(helmet()); // Provides some xss protections and hides headers from the client
+app.use(requestLogger)
 app.use(bodyParser.json());
 app.set('trust proxy', config.get('express.trustProxy'));
 
 app.use(routes);
+
+// Default - catch all requests that do not match the route and 
+app.use((_req, res, _next) => {
+    res.status(404);
+    res.send();
+});
 
 module.exports = app;

@@ -37,29 +37,26 @@ const config = convict({
 			default: true
 		}
 	},
-	log: {
-		app: {
-			dir: {
-				doc: 'The directory for the app log',
+	logs: {
+		combined: {
+			filename:  {
+				doc: 'The filename (including path) of the combined logs',
 				format: String,
-				default: 'log'
-			},
-			filename: {
-				doc: 'The file name for the app log',
+				default: '/var/log/transferwise-webhook/combined.log'
+			}
+		},
+		error: {
+			filename:  {
+				doc: 'The filename (including path) of the error logs',
 				format: String,
-				default:'app.log'
+				default: '/var/log/transferwise-webhook/error.log'
 			}
 		},
 		request: {
-			dir: {
-				doc: 'The directory for the request log',
-				format: String,
-				default: 'log'
-			},
 			filename: {
-				doc: 'The file name for the request log',
+				doc: 'The filename (including the path) of the request logs',
 				format: String,
-				default: 'request.log'
+				default: '/var/log/transferwise-webhook/request.log'
 			}
 		}
 	},
