@@ -1,5 +1,5 @@
 {
-    "$id": "event.json#",
+    "$id": "events/event.json#",
     "type": "object",
     "properties": {
         "data": {

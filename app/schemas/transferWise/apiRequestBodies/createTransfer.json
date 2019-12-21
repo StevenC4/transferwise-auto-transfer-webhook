@@ -1,0 +1,47 @@
+{
+    "$id": "apiRequestBodies/createTransfer.json#",
+    "type": "object",
+    "properties": {
+        "targetAccount": {
+            "type": "integer"
+        },
+        "quote": {
+            "type": "integer"
+        },
+        "customerTransactionId": {
+            "type": "string",
+            "format": "UUID"
+        },
+        "details": {
+            "type": "object",
+            "properties": {
+                "reference": {
+                    "type": "string",
+                    "maxLength": "10"
+                },
+                "transferPurpose": {
+                    "type": "string",
+                    "const": "Other"
+                },
+                "sourceOfFunds": {
+                    "type": "string",
+                    "const": "Other"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "reference",
+                "transferPurpose",
+                "sourceOfFunds"
+            ]
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "data",
+        "subscription_id",
+        "event_type",
+        "schema_version",
+        "sent_at"
+    ]
+}

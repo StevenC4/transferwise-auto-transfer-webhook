@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const config = require('../../config');
 const transferWise = require('../lib/transferWise');
+const uuidv4 = require('uuid/v4')
 
 module.exports.validateShouldTransferBalance = (req, _res, next) => {
     next();
@@ -21,11 +22,10 @@ module.exports.createQuote = asyncHandler(async (req, _res, next) => {
 
 // https://api-docs.transferwise.com/#transfers-create
 module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
-    const customerTransactionId = crypto.createHash('sha1').update(JSON.stringify(req.body), 'binary').digest('hex');
     req.transfer = await transferWise.transfer.create({
         targetAccount: config.get('transferWise.account.target.id'),
         quote: req.quote.id,
-        customerTransactionId,
+        customerTransactionId: uuidv4(),
         details: {
             reference: 'Trnsfrws',
             transferPurpose: 'Other',

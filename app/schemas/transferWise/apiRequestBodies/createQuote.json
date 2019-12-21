@@ -1,0 +1,35 @@
+{
+    "$id": "apiRequestBodies/createQuote.json#",
+    "type": "object",
+    "properties": {
+        "profile": {
+            "type": "string"
+        },
+        "source": {
+            "type": "string"
+        },
+        "target": {
+            "type": "string"
+        },
+        "rateType": {
+            "type": "string",
+            "const": "FIXED"
+        },
+        "sourceAmount": {
+            "type": "number",
+            "minimum": 0
+        },
+        "type": {
+            "type": "string",
+            "const": "REGULAR"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "data",
+        "subscription_id",
+        "event_type",
+        "schema_version",
+        "sent_at"
+    ]
+}

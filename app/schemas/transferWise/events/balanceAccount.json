@@ -1,8 +1,8 @@
 {
-    "$id": "balanceAccountEvent.json#",
+    "$id": "events/balanceAccount.json#",
     "$merge": {
         "source": {
-            "$refs": "event.json#"
+            "$refs": "events/event.json#"
         },
         "with": {
             "type": "object",

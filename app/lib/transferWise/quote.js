@@ -1,13 +1,16 @@
 const {_sendRequest} = require('./');
 const config = require('../../../config');
+const validator = require('../../lib/validator');
 
-module.exports.create = async (amount) => {
-    return await _sendRequest('POST', '/v1/quotes', {
-        profile: config.get('transferWise.profile.id'),
-        source: config.get('transferWise.source.currency'),
-        target: config.get('transferWise.target.currency'),
-        rateType: 'FIXED',
-        sourceAmount: amount,
-        type: 'REGULAR'
-    });
+module.exports.create = async body => {
+    const valid = validator('apiRequestBodies/createQuote.json#', body);
+    
+    if (!valid) {
+        console.error(validator.errors);
+        const error = new Error('Invalid request body');
+        error.validationErrors = validator.errors;
+        throw error;
+    }
+
+    return await _sendRequest('POST', '/v1/quotes', body);
 };
