@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('../../../config');
 const {createLogger, format, transports} = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 
