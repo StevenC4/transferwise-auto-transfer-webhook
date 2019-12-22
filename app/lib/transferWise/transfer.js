@@ -1,9 +1,8 @@
 const {_sendRequest} = require('./');
-const config = require('../../../config');
-const uuidv4 = require('uuid/v4');
+const validator = require('../../lib/validator');
 
 module.exports.create = async body => {
-    const valid = validator('apiRequestBodies/createTransfer.json#', body);
+    const valid = validator.validate('apiRequestBodies/createTransfer.json#', body);
     
     if (!valid) {
         console.error(validator.errors);
@@ -17,7 +16,7 @@ module.exports.create = async body => {
 
 // TODO: Add parameter validation
 module.exports.fund = async (profileId, transferId) => {
-    return await _sendRequest('POST', `v3/profiles/${profileId}/transfers/${transferId}/payments`, {
+    return await _sendRequest('POST', `/v3/profiles/${profileId}/transfers/${transferId}/payments`, {
         type: 'BALANCE'
     });
 };

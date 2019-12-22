@@ -10,14 +10,14 @@
         },
         "customerTransactionId": {
             "type": "string",
-            "format": "UUID"
+            "format": "uuid"
         },
         "details": {
             "type": "object",
             "properties": {
                 "reference": {
                     "type": "string",
-                    "maxLength": "10"
+                    "maxLength": 10
                 },
                 "transferPurpose": {
                     "type": "string",
@@ -38,10 +38,9 @@
     },
     "additionalProperties": false,
     "required": [
-        "data",
-        "subscription_id",
-        "event_type",
-        "schema_version",
-        "sent_at"
+        "targetAccount",
+        "quote",
+        "customerTransactionId",
+        "details"
     ]
 }

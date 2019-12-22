@@ -7,7 +7,7 @@
         },
         "subscription_id": {
             "type": "string",
-            "format": "UUID"
+            "format": "uuid"
         },
         "event_type": {
             "type": "string"

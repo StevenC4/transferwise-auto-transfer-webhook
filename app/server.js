@@ -29,4 +29,13 @@ app.use((req, res, _next) => {
     res.send();
 });
 
+app.use((err, _req, res, _next) => {
+    logger.error('An error occurred', {
+        err,
+        errorMessage: err.message
+    });
+    res.status(200);
+    res.send();
+});
+
 module.exports = app;

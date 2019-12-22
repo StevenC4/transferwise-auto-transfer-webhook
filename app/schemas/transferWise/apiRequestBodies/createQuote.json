@@ -21,15 +21,16 @@
         },
         "type": {
             "type": "string",
-            "const": "REGULAR"
+            "const": "BALANCE_PAYOUT"
         }
     },
     "additionalProperties": false,
     "required": [
-        "data",
-        "subscription_id",
-        "event_type",
-        "schema_version",
-        "sent_at"
+        "profile",
+        "source",
+        "target",
+        "rateType",
+        "sourceAmount",
+        "type"
     ]
 }

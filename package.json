@@ -7,6 +7,8 @@
     "start": "node ./app/index.js",
     "get-profile": "node ./scripts/getProfile.js",
     "get-accounts": "node ./scripts/getAccounts.js",
+    "get-borderless-accounts": "node ./scripts/getBorderlessAccounts.js",
+    "test-auto-transfer": "node ./scripts/testAutomaticTransfer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "stevenc4",

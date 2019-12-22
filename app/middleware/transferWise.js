@@ -27,7 +27,7 @@ module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
         quote: req.quote.id,
         customerTransactionId: uuidv4(),
         details: {
-            reference: 'Trnsfrws',
+            reference: 'Other',
             transferPurpose: 'Other',
             sourceOfFunds: 'Other'
         }

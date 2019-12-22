@@ -19,4 +19,4 @@ const ajv = new Ajv({
 
 require('ajv-merge-patch/keywords/merge')(ajv);
 
-module.exports.ajv;
+module.exports = ajv;

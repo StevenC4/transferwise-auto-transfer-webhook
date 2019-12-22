@@ -19,6 +19,7 @@ module.exports._sendRequest = async (method, path, body) => {
 };
 
 module.exports.accounts = require('./accounts');
+module.exports.borderlessAccounts = require('./borderlessAccounts');
 module.exports.profiles = require('./profiles');
 module.exports.quote = require('./quote');
 module.exports.transfer = require('./transfer');
