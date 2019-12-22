@@ -34,7 +34,7 @@ app.use((err, _req, res, _next) => {
         err,
         errorMessage: err.message
     });
-    res.status(200);
+    res.status(500);
     res.send();
 });
 
