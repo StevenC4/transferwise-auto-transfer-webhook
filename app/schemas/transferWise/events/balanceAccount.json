@@ -11,10 +11,29 @@
                     "type": "object",
                     "properties": {
                         "resource": {
-                            "type": "object"
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "const": "balance-account"
+                                },
+                                "profile_id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "id",
+                                "type",
+                                "profile_id"
+                            ]
                         },
                         "amount": {
-                            "type": "number"
+                            "type": "number",
+                            "exclusiveMinimum": 0
                         },
                         "currency": {
                             "type": "string"
@@ -27,7 +46,8 @@
                             "format": "date-time"
                         },
                         "transaction_type": {
-                            "type": "string"
+                            "type": "string",
+                            "const": "credit"
                         }
                     },
                     "additionalProperties": false,

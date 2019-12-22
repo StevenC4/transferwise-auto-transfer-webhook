@@ -66,22 +66,22 @@ const config = convict({
 		default: 8121
 	},
 	transferWise: {
-		account: {
+		currency: {
 			source: {
-				currency: {
-					doc: 'The source currency for the quote',
-					format: String,
-					default: '',
-					env: 'TRANSFERWISE_SOURCE_CURRENCY'
-				}
+				doc: 'The source currency for the quote',
+				format: String,
+				default: '',
+				env: 'TRANSFERWISE_SOURCE_CURRENCY'
 			},
 			target: {
-				currency: {
-					doc: 'The target currency for the quote',
-					format: String,
-					default: '',
-					env: 'TRANSFERWISE_TARGET_CURRENCY'
-				},
+				doc: 'The target currency for the quote',
+				format: String,
+				default: '',
+				env: 'TRANSFERWISE_TARGET_CURRENCY'
+			}
+		},
+		account: {
+			target: {
 				id: {
 					doc: 'The identifier of the target account',
 					format: 'integer',

@@ -6,8 +6,16 @@ module.exports.balanceAccountEvent = (req, res, next) => {
     
     const valid = validator.validate('events/balanceAccount.json#', req.body);
     if (!valid) {
-        console.error(validator.errors);
         error = new Error('Invalid event format');
+        error.errors = validator.errors;
+    } else if (req.body.data.resource.profile_id !== config.get('transferWise.profile.id')) {
+        error = new Error('Wrong profile id');
+    } else if (req.body.data.resource.id !== config.get('transferWise.balance.source.id')) {
+        error = new Error('Incorrect balance id');
+    } else if (req.body.data.currency !== config.get('transferWise.currency.source')) {
+        error = new Error(`Balance credit for incorrect currency: ${req.body.data.currency}`);
+    } else if (req.body.data.amount > req.body.data.post_transaction_balance_amount) {
+        error = new Error(`Amount (${req.body.data.amount}) cannot be greater than post_transaction_balance_amount (${req.body.data.post_transaction_balance_amount})`);
     }
 
     return next(error);

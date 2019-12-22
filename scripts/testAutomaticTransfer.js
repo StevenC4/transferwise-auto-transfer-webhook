@@ -34,8 +34,8 @@ const uuidv4 = require('uuid/v4');
     try {
         quote = await transferWise.quote.create({
             profile: config.get('transferWise.profile.id'),
-            source: config.get('transferWise.account.source.currency'),
-            target: config.get('transferWise.account.target.currency'),
+            source: config.get('transferWise.currency.source'),
+            target: config.get('transferWise.currency.target'),
             rateType: 'FIXED',
             sourceAmount: chosenBalance.amount.value,
             type: 'BALANCE_PAYOUT'

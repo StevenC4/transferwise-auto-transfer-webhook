@@ -2,20 +2,17 @@ const asyncHandler = require('express-async-handler');
 const config = require('../../config');
 const transferWise = require('../lib/transferWise');
 const uuidv4 = require('uuid/v4')
-
-module.exports.validateShouldTransferBalance = (req, _res, next) => {
-    next();
-};
+const validator = require('../lib/validator');
 
 // https://api-docs.transferwise.com/#quotes-create
 module.exports.createQuote = asyncHandler(async (req, _res, next) => {
     req.quote = await transferWise.quote.create({
         profile: config.get('transferWise.profile.id'),
-        source: config.get('transferWise.source.currency'),
-        target: config.get('transferWise.target.currency'),
+        source: config.get('transferWise.currency.source'),
+        target: config.get('transferWise.currency.target'),
         rateType: 'FIXED',
-        sourceAmount: req.body.amount,
-        type: 'REGULAR'
+        sourceAmount: req.body.data.amount,
+        type: 'BALANCE_PAYOUT'
     });
     next();
 });

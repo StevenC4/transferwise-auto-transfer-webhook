@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authorizationMiddleware = require('./middleware/authorization');
+const logMiddleware = require('./middleware/log');
 const transferWiseMiddleware = require('./middleware/transferWise');
 const validationMiddleware = require('./middleware/validation');
 
@@ -10,16 +11,8 @@ router.post('/balance-deposit', [
     transferWiseMiddleware.createQuote,
     transferWiseMiddleware.createTransfer,
     transferWiseMiddleware.fundTransfer,
-    (req, res, next) => {
-        console.log(req.body);
-        next();
-    },
-    (req, res, next) => res.send()
-]);
-
-router.post('/transfer-update', [
-    authorizationMiddleware.verifyEventSignature,
-    (req, res, next) => res.send()
+    logMiddleware.logBalanceAccountEvent,
+    (_req, res, _next) => res.status(200).send()
 ]);
 
 module.exports = router;
