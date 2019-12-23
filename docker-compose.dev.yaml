@@ -5,11 +5,12 @@ services:
     build: .
     image: transferwise-webhook:latest
     env_file:
-      - .env
+      - .dev.env
     environment:
       - NODE_ENV=production
       - APP_ENV=dev
       - TRANSFERWISE_PROFILE_ID=0
+      - TRANSFERWISE_SOURCE_BALANCE_ID=0
     expose:
       - "8121"
 

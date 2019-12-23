@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
         "profile": {
-            "type": "string"
+            "type": "integer"
         },
         "source": {
             "type": "string"

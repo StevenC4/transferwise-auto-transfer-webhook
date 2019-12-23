@@ -90,7 +90,7 @@ const config = convict({
 				}
 			}
 		},
-		balances: {
+		balance: {
 			source: {
 				id: {
 					doc: 'The identifier of the source balance',
@@ -126,7 +126,7 @@ const config = convict({
 		profile: {
 			id: {
 				doc: 'The id of your profile',
-				format: String,
+				format: 'integer',
 				default: '',
 				env: 'TRANSFERWISE_PROFILE_ID'
 			}

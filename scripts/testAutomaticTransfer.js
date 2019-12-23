@@ -16,7 +16,7 @@ const uuidv4 = require('uuid/v4');
         console.error('Chosen borderless account has no balances');
         return;
     }
-    const chosenBalance = borderlessAccount.balances.find(balance => balance.id === config.get('transferWise.balances.source.id'));
+    const chosenBalance = borderlessAccount.balances.find(balance => balance.id === config.get('transferWise.balance.source.id'));
     if (!chosenBalance) {
         console.error('Chosen balance not found');
         return;
