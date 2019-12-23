@@ -25,14 +25,14 @@ app.use((req, res, _next) => {
         method: req.method,
         originalUrl: req.originalUrl
     });
-    res.status(404);
-    res.send();
+    res.status(404).send();
 });
 
 app.use((err, _req, res, _next) => {
     logger.error('An error occurred', {
         err,
-        errorMessage: err.message
+        errorMessage: err.message,
+        stackTrace: err.stack
     });
     res.status(500);
     res.send();

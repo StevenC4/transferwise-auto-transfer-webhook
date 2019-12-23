@@ -22,7 +22,10 @@ if (config.get('env') !== 'prod') {
     logger.add(new transports.Console({
         format: format.combine(
             format.colorize(),
-            format.simple()
+            format.simple(),
+            format.errors({ stack: true }),
+            format.splat(),
+            format.json()
         )
     }));
 } else {

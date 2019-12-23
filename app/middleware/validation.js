@@ -1,3 +1,4 @@
+const config = require('../../config');
 const validator = require('../lib/validator');
 
 // https://api-docs.transferwise.com/#webhook-events-balance-deposit-event
@@ -9,9 +10,9 @@ module.exports.balanceAccountEvent = (req, res, next) => {
         error = new Error('Invalid event format');
         error.errors = validator.errors;
     } else if (req.body.data.resource.profile_id !== config.get('transferWise.profile.id')) {
-        error = new Error('Wrong profile id');
+        error = new Error(`Wrong profile id: ${req.body.data.resource.profile_id}`);
     } else if (req.body.data.resource.id !== config.get('transferWise.balance.source.id')) {
-        error = new Error('Incorrect balance id');
+        error = new Error(`Incorrect balance id: ${req.body.data.resource.id}`);
     } else if (req.body.data.currency !== config.get('transferWise.currency.source')) {
         error = new Error(`Balance credit for incorrect currency: ${req.body.data.currency}`);
     } else if (req.body.data.amount > req.body.data.post_transaction_balance_amount) {

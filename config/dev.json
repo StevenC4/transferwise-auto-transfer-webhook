@@ -2,6 +2,9 @@
     "transferWise": {
         "api": {
             "baseUrl": "https://api.sandbox.transferwise.tech"
+        },
+        "profile": {
+            "id": 0
         }
     }
 }
