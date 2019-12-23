@@ -34,8 +34,7 @@ app.use((err, _req, res, _next) => {
         errorMessage: err.message,
         stackTrace: err.stack
     });
-    res.status(500);
-    res.send();
+    res.status(200).send();
 });
 
 module.exports = app;

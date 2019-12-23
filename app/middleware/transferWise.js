@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const config = require('../../config');
 const transferWise = require('../lib/transferWise');
 const uuidv4 = require('uuid/v4')
-const validator = require('../lib/validator');
 
 // https://api-docs.transferwise.com/#quotes-create
 module.exports.createQuote = asyncHandler(async (req, _res, next) => {

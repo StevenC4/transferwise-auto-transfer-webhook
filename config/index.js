@@ -1,4 +1,5 @@
 const convict = require('convict');
+const fs = require('fs');
 const path = require('path');
 
 const config = convict({
@@ -26,8 +27,8 @@ const config = convict({
 	},
 	env: {
 		doc: 'The environment to run this project in',
-		format: String,
-		default: 'prod',
+		format: ['production', 'development'],
+		default: 'production',
 		env: 'APP_ENV'
 	},
 	express: {
@@ -140,8 +141,9 @@ const config = convict({
 });
 
 const env = config.get('env');
-if (env === 'dev') {
-	config.loadFile(path.resolve(__dirname, './dev.json'));
+const envFilePath = path.resolve(__dirname, `${env}.json`);
+if (fs.existsSync(envFilePath)) {
+	config.loadFile(envFilePath);
 }
 
 config.validate({allowed: 'strict'});

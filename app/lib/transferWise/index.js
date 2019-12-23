@@ -15,7 +15,13 @@ module.exports._sendRequest = async (method, path, body) => {
     }
     const response = await fetch(`${config.get('transferWise.api.baseUrl')}${path}`, options);
     const json = await response.json();
-    return json;
+    if (response.ok) {
+        return json;
+    } else {
+        const error = new Error('Error calling the TransferWise API');
+        error.apiError = json;
+        throw error;
+    }
 };
 
 module.exports.accounts = require('./accounts');
