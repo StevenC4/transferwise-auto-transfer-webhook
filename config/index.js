@@ -59,6 +59,19 @@ const config = convict({
 				format: String,
 				default: '/var/log/transferwise-webhook/request.log'
 			}
+		},
+		transferWise: {
+			filename: {
+				doc: 'The filename (including the path) of the transferWise API / webhook logs',
+				format: String,
+				default: '/var/log/transferwise-webhook/transferWise.log'
+			},
+			log: {
+				doc: 'A boolean determining whether or not to log transferwise API / webhook entities',
+				format: 'Boolean',
+				default: false,
+				env: 'LOG_TRANSFERWISE_ENTITIES'
+			}
 		}
 	},
 	port: {

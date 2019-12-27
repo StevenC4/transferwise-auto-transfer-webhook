@@ -4,9 +4,11 @@ services:
     container_name: transferwise-webhook
     build: .
     image: transferwise-webhook:latest
+    volumes:
+      - /var/log/transferwise-webhook:/var/log/transferwise-webhook
     environment:
       - NODE_ENV=production
-      - APP_ENV=development
+      - APP_ENV=production
     env_file:
       - .env
     expose:

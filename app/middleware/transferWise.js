@@ -1,7 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const config = require('../../config');
+const logger = require('../lib/loggers/transferWise');
 const transferWise = require('../lib/transferWise');
-const uuidv4 = require('uuid/v4')
+const uuidv4 = require('uuid/v4');
 
 // https://api-docs.transferwise.com/#quotes-create
 module.exports.createQuote = asyncHandler(async (req, _res, next) => {
@@ -13,6 +14,11 @@ module.exports.createQuote = asyncHandler(async (req, _res, next) => {
         sourceAmount: req.body.data.amount,
         type: 'BALANCE_PAYOUT'
     });
+
+    if (config.get('logs.transferWise.log')) {
+        logger.info(req.quote);
+    }
+
     next();
 });
 
@@ -28,11 +34,21 @@ module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
             sourceOfFunds: 'Other'
         }
     });
+
+    if (config.get('logs.transferWise.log')) {
+        logger.info(req.transfer);
+    }
+
     next();
 });
 
 // https://api-docs.transferwise.com/#transfers-fund
 module.exports.fundTransfer = asyncHandler(async (req, _res, next) => {
     req.transferStatus = await transferWise.transfer.fund(config.get('transferWise.profile.id'), req.transfer.id);
+
+    if (config.get('logs.transferWise.log')) {
+        logger.info(req.transferStatus);
+    }
+
     next();
 });
