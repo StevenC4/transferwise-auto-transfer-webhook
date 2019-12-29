@@ -27,11 +27,14 @@ As of the publishing of this repo, the following are requirements for creating a
 
 ### Getting Started
 
-1. Clone the github repository
+1. Clone the github repository.
 2. Log into your TransferWise account and generate an API token. Paste the token into a .env file (should be ignored by git), using the [`TRANFERWISE_API_TOKEN`](#TRANFERWISE_API_TOKEN) environment variable.
-3. In your terminal, from the project root, run `npm run get-profile`. Copy the `id` field from the response and set it in the .env file for the [TRANSFERWISE_PROFILE_ID](#TRANSFERWISE_PROFILE_ID) environment variable
-4. In your terminal, run `npm run get-accounts`. In the response, find the account that you want to use as your target account for your automatic transfers and copy the `id` field into the .env file for the [TRANSFERWISE_TARGET_ACCOUNT_ID](#TRANSFERWISE_TARGET_ACCOUNT_ID) environment variable
+3. In your terminal, from the project root, run `npm run get-profile`. Copy the `id` field from the response and set it in the .env file for the [TRANSFERWISE_PROFILE_ID](#TRANSFERWISE_PROFILE_ID) environment variable.
+4. In your terminal, run `npm run get-accounts`. In the response, find the account that you want to use as your target account for your automatic transfers and copy the `id` field into the .env file for the [TRANSFERWISE_TARGET_ACCOUNT_ID](#TRANSFERWISE_TARGET_ACCOUNT_ID) environment variable.
 5. In your terminal, run `npm run get-borderless-accounts`. In the response, find the account and balance that you want to use as the source balance for your automatic transfers. Copy the `id` field from the correct balance into the .env file for the [TRANSFERWISE_SOURCE_BALANCE_ID](#TRANSFERWISE_SOURCE_BALANCE_ID) environment variable.
+6. Using the `DOCKER_NETWORK_NAME` in your .env file, specify the existing docker bridge network on which the service will run.
+7. From your terminal, run `docker-compose up -d`.
+
 
 #### Assumptions
 * This guide assumes you have already satisfied all of the requirements listed above.
