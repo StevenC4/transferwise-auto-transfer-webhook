@@ -63,18 +63,21 @@ If set to `true`:
 If set to `false`:
   * The service will not log any of the information mentioned above
 
-#### TRANSFERWISE_TARGET_ACCOUNT_ID
+#### `TRANSFERWISE_TARGET_ACCOUNT_ID`
 The ID of the target account to which inbound money will be automatically transferred.
 
 You can discover this by running `npm run get-accounts` and looking over the list of accounts you get back.
 
-#### TRANSFERWISE_SOURCE_BALANCE_ID
+#### `TRANSFERWISE_SOURCE_BALANCE_ID`
 The ID of the source TransferWise balance from which money will be automatically transferred whenever it is deposited.
 
 You can discover this by running `npm run get-borderless-accounts` and looking over the list of balances you get back.
 
-#### TRANFERWISE_API_TOKEN
+#### `TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID`
+The id of the source TransferWise account where the balance from which the money will be transferred resides. This is only used in `scripts/testAutomaticTransfer.js` / `npm run test-auto-transfer` and is not required for the service to run. When the service is running, it will use information passed in from the webhook event instead.
+
+#### `TRANFERWISE_API_TOKEN`
 The TransferWise API token you generated from your profile page.
 
-#### TRANSFERWISE_PROFILE_ID
+#### `TRANSFERWISE_PROFILE_ID`
 Your transferwise profile ID. You can discover this by running `npm run get-profile`. This is necessary for creating a quote, executing the funding of a transfer, and getting a list of balances.
