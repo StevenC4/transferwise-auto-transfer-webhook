@@ -14,9 +14,12 @@ As of the publishing of this repo, the following are requirements for creating a
 * Has a valid HTTPS certificate signed by a trusted Certificate Authority - CA (self-signed or expired certificates are not accepted)
 * Does not include any query arguments in the URL
 
-#### Running via included docker-compose.yaml
+#### Other
 
-* You must create a .env file
+* You must create a .env file if you are running the service via the included docker-compose.yaml file
+* You must generate a TransferWise API token
+
+#### Running the service
 
 ### Recommendations
 * To satisfy the first three requirements, I recommend making use of [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) and [JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) if you don't aready have a framework for exposing services to the internet.
@@ -59,3 +62,19 @@ If set to `true`:
 
 If set to `false`:
   * The service will not log any of the information mentioned above
+
+#### TRANSFERWISE_TARGET_ACCOUNT_ID
+The ID of the target account to which inbound money will be automatically transferred.
+
+You can discover this by running `npm run get-accounts` and looking over the list of accounts you get back.
+
+#### TRANSFERWISE_SOURCE_BALANCE_ID
+The ID of the source TransferWise balance from which money will be automatically transferred whenever it is deposited.
+
+You can discover this by running `npm run get-borderless-accounts` and looking over the list of balances you get back.
+
+#### TRANFERWISE_API_TOKEN
+The TransferWise API token you generated from your profile page.
+
+#### TRANSFERWISE_PROFILE_ID
+Your transferwise profile ID. You can discover this by running `npm run get-profile`. This is necessary for creating a quote, executing the funding of a transfer, and getting a list of balances.
