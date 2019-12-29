@@ -6,5 +6,9 @@ const transferWise = require('../app/lib/transferWise');
 
 (async () => {
     const borderlessAccounts = await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id'));
-    console.log(borderlessAccounts, borderlessAccounts[0].balances);
+    borderlessAccounts.forEach(borderlessAccount => {
+        console.log('Borderless account', borderlessAccount.id);
+        console.log('Account', borderlessAccount);
+        console.log('Balances', borderlessAccount.balances);
+    });
 })();

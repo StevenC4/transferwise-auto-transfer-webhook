@@ -25,7 +25,13 @@ As of the publishing of this repo, the following are requirements for creating a
 * To satisfy the first three requirements, I recommend making use of [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) and [JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) if you don't aready have a framework for exposing services to the internet.
 * Set up a [TransferWise sandbox account](https://sandbox.transferwise.tech/) if you want to test any TransferWise API calls.
 
-### Running the service
+### Getting Started
+
+1. Clone the github repository
+2. Log into your TransferWise account and generate an API token. Paste the token into a .env file (should be ignored by git), using the [`TRANFERWISE_API_TOKEN`](#TRANFERWISE_API_TOKEN) environment variable.
+3. In your terminal, from the project root, run `npm run get-profile`. Copy the `id` field from the response and set it in the .env file for the [TRANSFERWISE_PROFILE_ID](#TRANSFERWISE_PROFILE_ID) environment variable
+4. In your terminal, run `npm run get-accounts`. In the response, find the account that you want to use as your target account for your automatic transfers and copy the `id` field into the .env file for the [TRANSFERWISE_TARGET_ACCOUNT_ID](#TRANSFERWISE_TARGET_ACCOUNT_ID) environment variable
+5. In your terminal, run `npm run get-borderless-accounts`. In the response, find the account and balance that you want to use as the source balance for your automatic transfers. Copy the `id` field from the correct balance into the .env file for the [TRANSFERWISE_SOURCE_BALANCE_ID](#TRANSFERWISE_SOURCE_BALANCE_ID) environment variable.
 
 #### Assumptions
 * This guide assumes you have already satisfied all of the requirements listed above.
@@ -72,9 +78,6 @@ You can discover this by running `npm run get-accounts` and looking over the lis
 The ID of the source TransferWise balance from which money will be automatically transferred whenever it is deposited.
 
 You can discover this by running `npm run get-borderless-accounts` and looking over the list of balances you get back.
-
-#### `TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID`
-The id of the source TransferWise account where the balance from which the money will be transferred resides. This is only used in `scripts/testAutomaticTransfer.js` / `npm run test-auto-transfer` and is not required for the service to run. When the service is running, it will use information passed in from the webhook event instead.
 
 #### `TRANFERWISE_API_TOKEN`
 The TransferWise API token you generated from your profile page.

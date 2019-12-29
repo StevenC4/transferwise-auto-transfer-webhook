@@ -100,16 +100,6 @@ const config = convict({
 				}
 			}
 		},
-		borderlessAccount: {
-			source: {
-				id: {
-					doc: 'The identifier of the source borderless account',
-					format: 'integer',
-					default: '',
-					env: 'TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID'
-				}
-			}
-		},
 		api: {
 			baseUrl: {
 				doc: 'The base URL of the transferwise public API',

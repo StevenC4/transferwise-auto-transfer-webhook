@@ -7,16 +7,10 @@ const uuidv4 = require('uuid/v4');
 
 (async () => {
     const borderlessAccounts = await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id'));
-    const borderlessAccount = borderlessAccounts.find(borderlessAccount => borderlessAccount.id === config.get('transferWise.borderlessAccount.source.id'));
-    if (!borderlessAccount) {
-        console.error('Chosen borderless account not found');
-        return;
-    }
-    if (!borderlessAccount.balances.length) {
-        console.error('Chosen borderless account has no balances');
-        return;
-    }
-    const chosenBalance = borderlessAccount.balances.find(balance => balance.id === config.get('transferWise.balance.source.id'));
+    const chosenBalance = borderlessAccounts.reduce((accumulator, borderlessAccount) => {
+        return accumulator || borderlessAccount.balances.find(balance => balance.id === config.get('transferWise.balance.source.id'));
+    }, undefined);
+
     if (!chosenBalance) {
         console.error('Chosen balance not found');
         return;
@@ -26,7 +20,6 @@ const uuidv4 = require('uuid/v4');
         return;
     }
 
-    console.log('Borderless account:', borderlessAccount);
     console.log('Balance:', chosenBalance);
 
     const accounts = await transferWise.accounts.get();
