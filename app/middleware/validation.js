@@ -18,8 +18,6 @@ module.exports.balanceAccountEvent = (req, res, next) => {
         error = new Error(`Wrong profile id: ${req.body.data.resource.profile_id}`);
     } else if (req.body.data.resource.id !== config.get('transferWise.balance.source.id')) {
         error = new Error(`Incorrect balance id: ${req.body.data.resource.id}`);
-    } else if (req.body.data.currency !== config.get('transferWise.currency.source')) {
-        error = new Error(`Balance credit for incorrect currency: ${req.body.data.currency}`);
     } else if (req.body.data.amount > req.body.data.post_transaction_balance_amount) {
         error = new Error(`Amount (${req.body.data.amount}) cannot be greater than post_transaction_balance_amount (${req.body.data.post_transaction_balance_amount})`);
     }

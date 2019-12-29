@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 const publicKey = Buffer.from(config.get('transferWise.publicKey'), 'base64');
 
-module.exports.verifyEventSignature = (req, res, next) => {
+module.exports.verifyEventSignature = (req, _res, next) => {
     let error;
     const signature = req.header('X-Signature');
     

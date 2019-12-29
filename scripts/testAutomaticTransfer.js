@@ -29,13 +29,23 @@ const uuidv4 = require('uuid/v4');
     console.log('Borderless account:', borderlessAccount);
     console.log('Balance:', chosenBalance);
 
+    const accounts = await transferWise.accounts.get();
+    const targetAccount = accounts.find(account => account.id === config.get('transferWise.account.target.id'));
+
+    if (!targetAccount) {
+        console.error('Chosen target account not found');
+        return;
+    }
+
+    console.log('Target account:', targetAccount);
+
     // 1. Create a quote
     let quote;
     try {
         quote = await transferWise.quote.create({
             profile: config.get('transferWise.profile.id'),
-            source: config.get('transferWise.currency.source'),
-            target: config.get('transferWise.currency.target'),
+            source: chosenBalance.currency,
+            target: targetAccount.currency,
             rateType: 'FIXED',
             sourceAmount: chosenBalance.amount.value,
             type: 'BALANCE_PAYOUT'

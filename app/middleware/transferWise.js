@@ -4,12 +4,25 @@ const logger = require('../lib/loggers/transferWise');
 const transferWise = require('../lib/transferWise');
 const uuidv4 = require('uuid/v4');
 
+module.exports.getTargetAccount = asyncHandler(async (req, _res, next) => {
+    let error;
+
+    const accounts = await transferWise.accounts.get();
+    req.targetAccount = accounts.find(account => account.id === config.get('transferWise.account.target.id'));
+
+    if (!req.targetAccount) {
+        error = new Error('Chosen target account not found');
+    }
+
+    next(error);
+});
+
 // https://api-docs.transferwise.com/#quotes-create
 module.exports.createQuote = asyncHandler(async (req, _res, next) => {
     req.quote = await transferWise.quote.create({
         profile: config.get('transferWise.profile.id'),
-        source: config.get('transferWise.currency.source'),
-        target: config.get('transferWise.currency.target'),
+        source: req.body.data.currency,
+        target: targetAccount.currency,
         rateType: 'FIXED',
         sourceAmount: req.body.data.amount,
         type: 'BALANCE_PAYOUT'

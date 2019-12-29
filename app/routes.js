@@ -8,6 +8,7 @@ const validationMiddleware = require('./middleware/validation');
 router.post('/balance-deposit', [
     authorizationMiddleware.verifyEventSignature,
     validationMiddleware.balanceAccountEvent,
+    transferWiseMiddleware.getTargetAccount,
     transferWiseMiddleware.createQuote,
     transferWiseMiddleware.createTransfer,
     transferWiseMiddleware.fundTransfer,

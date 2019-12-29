@@ -4,4 +4,7 @@ dotenv.config();
 const config = require('../config');
 const transferWise = require('../app/lib/transferWise');
 
-transferWise.borderlessAccounts.get(config.get('transferWise.profile.id')).then(response => console.log(response, response[0].balances));
+(async () => {
+    const borderlessAccounts = await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id'));
+    console.log(borderlessAccounts, borderlessAccounts[0].balances);
+})();
