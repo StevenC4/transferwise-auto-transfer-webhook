@@ -37,7 +37,7 @@ If you will be running this project via the included docker-compose file, you mu
 The following environment variables can be set to configure the service:
 
 #### `APP_ENV`
-Possible values: `production` or `development`
+Possible values: `development` or `production`
 
 If set to `development`:
 * The loggers will log to the console in addition to the log files
@@ -49,4 +49,13 @@ If set to `production`:
 * The service will make API calls against the TransferWise production API
 * The service will use the TransferWise production public key for public key verification
 
+#### `LOG_TRANSFERWISE_ENTITIES`
+Possible values: `true` or `false`
 
+If set to `true`:
+* The service will log:
+  * Event bodies for incoming TransferWise webhook events
+  * Return values for all TransferWise API calls
+
+If set to `false`:
+  * The service will not log any of the information mentioned above
