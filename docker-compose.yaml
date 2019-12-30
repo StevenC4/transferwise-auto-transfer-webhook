@@ -3,7 +3,7 @@ services:
   transferwise-webhook:
     container_name: transferwise-webhook
     build: .
-    image: transferwise-webhook:latest
+    image: stevenc4/transferwise-webhook:latest
     volumes:
       - /var/log/transferwise-webhook:/var/log/transferwise-webhook
     environment:
