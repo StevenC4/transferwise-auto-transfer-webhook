@@ -1,4 +1,4 @@
-.PHONY: build tag push logs update-restart up-re up-re-dev
+.PHONY: build tag push logs update-restart build-update-restart bu-up-re up-re up-re-dev
 
 REPO ?= stevenc4/transferwise-webhook
 DATETIME = $(shell date +%Y%m%d)
@@ -17,6 +17,12 @@ logs:
 
 update-restart:
 up-re:
+	docker-compose pull
+	docker-compose down
+	docker-compose up -d
+
+build-update-restart:
+bu-up-re:
 	docker-compose build
 	docker-compose down
 	docker-compose up -d
