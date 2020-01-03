@@ -81,6 +81,14 @@ const config = convict({
 	},
 	transferWise: {
 		account: {
+			source: {
+				id: {
+					doc: 'The identifier of the source account',
+					format: 'integer',
+					default: '',
+					env: 'TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID'
+				}
+			},
 			target: {
 				id: {
 					doc: 'The identifier of the target account',
@@ -88,7 +96,7 @@ const config = convict({
 					default: '',
 					env: 'TRANSFERWISE_TARGET_ACCOUNT_ID'
 				}
-			}
+			},
 		},
 		balance: {
 			source: {
