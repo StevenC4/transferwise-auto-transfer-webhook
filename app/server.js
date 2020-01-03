@@ -21,13 +21,13 @@ app.use(authorizationMiddleware.verifyEventSignature)
 app.use(routes);
 
 // Default - catch all requests that do not match the route and
-app.use((req, _res, next) => {
+app.use((_req, _res, next) => {
     const error = new Error('Invalid route called');
     error.statusCode = 404;
     next(error);
 });
 
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, _next) => {
     const code = err.statusCode || 200;
     logger.error('An error occurred', {
         ip: req.ip,
