@@ -22,7 +22,7 @@ module.exports.createQuote = asyncHandler(async (req, _res, next) => {
     req.quote = await transferWise.quote.create({
         profile: config.get('transferWise.profile.id'),
         source: req.body.data.currency,
-        target: targetAccount.currency,
+        target: req.targetAccount.currency,
         rateType: 'FIXED',
         sourceAmount: req.body.data.amount,
         type: 'BALANCE_PAYOUT'
