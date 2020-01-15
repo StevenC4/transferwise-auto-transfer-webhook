@@ -29,7 +29,7 @@ module.exports.createQuote = asyncHandler(async (req, _res, next) => {
     });
 
     if (config.get('logs.transferWise.log')) {
-        logger.info(req.quote);
+        logger.info({quote: req.quote});
     }
 
     next();
@@ -49,7 +49,7 @@ module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
     });
 
     if (config.get('logs.transferWise.log')) {
-        logger.info(req.transfer);
+        logger.info({transfer: req.transfer});
     }
 
     next();
@@ -60,7 +60,7 @@ module.exports.fundTransfer = asyncHandler(async (req, _res, next) => {
     req.transferStatus = await transferWise.transfer.fund(config.get('transferWise.profile.id'), req.transfer.id);
 
     if (config.get('logs.transferWise.log')) {
-        logger.info(req.transferStatus);
+        logger.info({transferStatus: req.transferStatus});
     }
 
     next();

@@ -11,12 +11,18 @@ const routes = require('./routes');
 const app = express();
 
 app.use(cors(config.get('cors')));
-app.use(helmet()); // Provides some xss protections and hides headers from the client
+app.use(helmet());
+app.use(bodyParser.json({
+    verify: (req, _res, buf, _encoding) => {
+        if (buf && buf.length) {
+            req.rawBody = buf.toString('utf8'); // Raw body needed for public key verification - stringifying req.body will not work for all cases
+        }
+    }
+}));
 app.use(requestLogger)
-app.use(bodyParser.json());
 app.set('trust proxy', config.get('express.trustProxy'));
 
-app.use(authorizationMiddleware.verifyEventSignature)
+app.use(authorizationMiddleware.verifyEventSignature);
 
 app.use(routes);
 

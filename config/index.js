@@ -98,16 +98,6 @@ const config = convict({
 				}
 			},
 		},
-		balance: {
-			source: {
-				id: {
-					doc: 'The identifier of the source balance',
-					format: 'integer',
-					default: '',
-					env: 'TRANSFERWISE_SOURCE_BALANCE_ID'
-				}
-			}
-		},
 		api: {
 			baseUrl: {
 				doc: 'The base URL of the transferwise public API',
@@ -120,6 +110,31 @@ const config = convict({
 				default: '',
 				env: 'TRANFERWISE_API_TOKEN'
 			}
+		},
+		balance: {
+			source: {
+				id: {
+					doc: 'The identifier of the source balance',
+					format: 'integer',
+					default: '',
+					env: 'TRANSFERWISE_SOURCE_BALANCE_ID'
+				}
+			}
+		},
+		ips: {
+			doc: 'An array of ips from which the webhook events may be emitted',
+			format: Array,
+			default: [
+				'18.184.57.172',
+				'18.196.107.128',
+				'18.196.35.23',
+				'18.184.162.75',
+				'18.184.251.153',
+				'18.197.211.10',
+				'18.197.211.120',
+				'18.197.211.225',
+				'52.58.50.91'
+			]
 		},
 		profile: {
 			id: {
