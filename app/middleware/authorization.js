@@ -1,7 +1,6 @@
 const config = require('../../config');
 const crypto = require('crypto');
 
-const transferWiseIPs = config.get('transferWise.ips').reduce((ips, ip) => ({...ips, [ip]: undefined}), {});
 const publicKey = Buffer.from(config.get('transferWise.publicKey'), 'base64');
 const logger = require('../lib/loggers/app');
 
