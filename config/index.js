@@ -74,10 +74,17 @@ const config = convict({
 			}
 		}
 	},
-	port: {
-		doc: 'The port on which the server will listen',
-		format: 'port',
-		default: 8121
+	ports: {
+		webhook: {
+			doc: 'The port on which the webhook will listen',
+			format: 'port',
+			default: 8121
+		},
+		configUI: {
+			doc: 'The port on which the server of the configuration UI',
+			format: 'port',
+			default: 8121
+		}
 	},
 	transferWise: {
 		account: {
@@ -85,7 +92,7 @@ const config = convict({
 				id: {
 					doc: 'The identifier of the source account',
 					format: 'integer',
-					default: '',
+					default: 0,
 					env: 'TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID'
 				}
 			},
@@ -93,7 +100,7 @@ const config = convict({
 				id: {
 					doc: 'The identifier of the target account',
 					format: 'integer',
-					default: '',
+					default: 0,
 					env: 'TRANSFERWISE_TARGET_ACCOUNT_ID'
 				}
 			},
@@ -140,7 +147,7 @@ const config = convict({
 			id: {
 				doc: 'The id of your profile',
 				format: 'integer',
-				default: '',
+				default: 0,
 				env: 'TRANSFERWISE_PROFILE_ID'
 			}
 		},

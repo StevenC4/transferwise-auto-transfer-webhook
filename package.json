@@ -10,7 +10,8 @@
     "get-profile": "node ./scripts/getProfile.js",
     "get-accounts": "node ./scripts/getAccounts.js",
     "get-borderless-accounts": "node ./scripts/getBorderlessAccounts.js",
-    "test-auto-transfer": "node ./scripts/testAutomaticTransfer.js"
+    "test-auto-transfer": "node ./scripts/testAutomaticTransfer.js",
+    "init": "node ./scripts/init.js"
   },
   "author": "stevenc4",
   "license": "ISC",
