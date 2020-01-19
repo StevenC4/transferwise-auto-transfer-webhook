@@ -5,32 +5,22 @@ const express = require('express');
 const helmet = require('helmet');
 const logger = require('./lib/loggers/app');
 const requestLogger = require('./middleware/requestLogger');
-const authorizationMiddleware = require('./middleware/authorization');
-const routes = require('./routes');
 
 const app = express();
 app.customFields = {
-    name: config.get('apps.webhook.name'),
-    port: config.get('apps.webhook.port')
+    name: config.get('apps.configUI.name'),
+    port: config.get('apps.configUI.port')
 };
 
 app.use(cors(config.get('cors')));
 app.use(helmet());
 app.set('trust proxy', config.get('express.trustProxy'));
 
-app.use(bodyParser.json({
-    verify: (req, _res, buf, _encoding) => {
-        if (buf && buf.length) {
-            req.rawBody = buf.toString('utf8'); // Raw body needed for public key verification - stringifying req.body will not work for all cases
-        }
-    }
-}));
+app.use(bodyParser.json());
 
 app.use(requestLogger)
 
-app.use(authorizationMiddleware.verifyEventSignature);
-
-app.use(routes);
+// app.use(routes);
 
 // Default - catch all requests that do not match the route and
 app.use((_req, _res, next) => {

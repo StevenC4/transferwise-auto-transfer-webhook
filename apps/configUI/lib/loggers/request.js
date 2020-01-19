@@ -22,12 +22,15 @@ if (config.get('env') !== 'production') {
     logger.add(new transports.Console({
         format: format.combine(
             format.colorize(),
-            format.simple()
+            format.simple(),
+            format.errors({ stack: true }),
+            format.splat(),
+            format.json()
         )
     }));
 } else {
     logger.add(new DailyRotateFile({
-        filename: config.get('logs.webhook.transferWise.filename'),
+        filename: config.get('logs.configUI.request.filename'),
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
         maxSize: '20m',

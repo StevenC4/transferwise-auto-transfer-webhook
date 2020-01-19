@@ -30,7 +30,7 @@ if (config.get('env') !== 'production') {
     }));
 } else {
     logger.add(new DailyRotateFile({
-        filename: config.get('logs.request.filename'),
+        filename: config.get('logs.webhook.request.filename'),
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
         maxSize: '20m',

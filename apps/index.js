@@ -1,12 +1,13 @@
 const http = require('http');
 const config = require('../config');
+const configUIApp = require('./configUI/app');
 const webhookApp = require('./webhook/app');
 
 /**
  * Create HTTP server
  */
 
-const httpServers = [webhookApp].map(expressApp => {
+const httpServers = [configUIApp, webhookApp].map(expressApp => {
 	const {name, port} = expressApp.customFields;
 
 	console.log(`Starting ${name} on port ${port} in ${config.get('env')} environment`);

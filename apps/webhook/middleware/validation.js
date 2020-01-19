@@ -6,7 +6,7 @@ const logger = require('../lib/loggers/transferWise');
 module.exports.balanceAccountEvent = (req, res, next) => {
     let error;
 
-    if (config.get('logs.transferWise.log')) {
+    if (config.get('logs.webhook.transferWise.log')) {
         logger.info(req.body);
     }
 

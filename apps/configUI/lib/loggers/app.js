@@ -27,7 +27,15 @@ if (config.get('env') !== 'production') {
     }));
 } else {
     logger.add(new DailyRotateFile({
-        filename: config.get('logs.webhook.transferWise.filename'),
+        filename: config.get('logs.configUI.error.filename'),
+        level: 'error',
+        datePattern: 'YYYY-MM-DD-HH',
+        zippedArchive: true,
+        maxSize: '20m',
+        maxFiles: '31d'
+    }));
+    logger.add(new DailyRotateFile({
+        filename: config.get('logs.configUI.combined.filename'),
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
         maxSize: '20m',

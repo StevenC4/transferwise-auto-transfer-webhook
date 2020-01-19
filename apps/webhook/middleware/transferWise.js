@@ -28,7 +28,7 @@ module.exports.createQuote = asyncHandler(async (req, _res, next) => {
         type: 'BALANCE_PAYOUT'
     });
 
-    if (config.get('logs.transferWise.log')) {
+    if (config.get('logs.webhook.transferWise.log')) {
         logger.info({quote: req.quote});
     }
 
@@ -48,7 +48,7 @@ module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
         }
     });
 
-    if (config.get('logs.transferWise.log')) {
+    if (config.get('logs.webhook.transferWise.log')) {
         logger.info({transfer: req.transfer});
     }
 
@@ -59,7 +59,7 @@ module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
 module.exports.fundTransfer = asyncHandler(async (req, _res, next) => {
     req.transferStatus = await transferWise.transfer.fund(config.get('transferWise.profile.id'), req.transfer.id);
 
-    if (config.get('logs.transferWise.log')) {
+    if (config.get('logs.webhook.transferWise.log')) {
         logger.info({transferStatus: req.transferStatus});
     }
 

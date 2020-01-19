@@ -60,38 +60,63 @@ const config = convict({
 		}
 	},
 	logs: {
-		combined: {
-			filename:  {
-				doc: 'The filename (including path) of the combined logs',
-				format: String,
-				default: '/var/log/transferwise-webhook/combined.log'
-			}
-		},
-		error: {
-			filename:  {
-				doc: 'The filename (including path) of the error logs',
-				format: String,
-				default: '/var/log/transferwise-webhook/error.log'
-			}
-		},
-		request: {
-			filename: {
-				doc: 'The filename (including the path) of the request logs',
-				format: String,
-				default: '/var/log/transferwise-webhook/request.log'
-			}
-		},
-		transferWise: {
-			filename: {
-				doc: 'The filename (including the path) of the transferWise API / webhook logs',
-				format: String,
-				default: '/var/log/transferwise-webhook/transferWise.log'
+		webhook: {
+			combined: {
+				filename: {
+					doc: 'The filename (including path) of the combined logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/webhook/combined.log'
+				}
 			},
-			log: {
-				doc: 'A boolean determining whether or not to log transferwise API / webhook entities',
-				format: 'Boolean',
-				default: false,
-				env: 'LOG_TRANSFERWISE_ENTITIES'
+			error: {
+				filename: {
+					doc: 'The filename (including path) of the error logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/webhook/error.log'
+				}
+			},
+			request: {
+				filename: {
+					doc: 'The filename (including the path) of the request logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/webhook/request.log'
+				}
+			},
+			transferWise: {
+				filename: {
+					doc: 'The filename (including the path) of the transferWise API / webhook logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/webhook/transferWise.log'
+				},
+				log: {
+					doc: 'A boolean determining whether or not to log transferwise API / webhook entities',
+					format: 'Boolean',
+					default: false,
+					env: 'LOG_TRANSFERWISE_ENTITIES'
+				}
+			}
+		},
+		configUI: {
+			combined: {
+				filename: {
+					doc: 'The filename (including path) of the combined logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/configUI/combined.log'
+				}
+			},
+			error: {
+				filename: {
+					doc: 'The filename (including path) of the error logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/configUI/error.log'
+				}
+			},
+			request: {
+				filename: {
+					doc: 'The filename (including the path) of the request logs',
+					format: String,
+					default: '/var/log/transferwise-webhook/configUI/request.log'
+				}
 			}
 		}
 	},

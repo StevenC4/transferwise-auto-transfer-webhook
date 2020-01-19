@@ -27,7 +27,7 @@ if (config.get('env') !== 'production') {
     }));
 } else {
     logger.add(new DailyRotateFile({
-        filename: config.get('logs.error.filename'),
+        filename: config.get('logs.webhook.error.filename'),
         level: 'error',
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
@@ -35,7 +35,7 @@ if (config.get('env') !== 'production') {
         maxFiles: '31d'
     }));
     logger.add(new DailyRotateFile({
-        filename: config.get('logs.combined.filename'),
+        filename: config.get('logs.webhook.combined.filename'),
         datePattern: 'YYYY-MM-DD-HH',
         zippedArchive: true,
         maxSize: '20m',
