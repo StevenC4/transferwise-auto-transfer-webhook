@@ -2,6 +2,8 @@ const convict = require('convict');
 const fs = require('fs');
 const path = require('path');
 
+const configFilePath = '/var/lib/transferwise-webhook/config.json';
+
 const config = convict({
 	apps: {
 		webhook: {
@@ -195,10 +197,33 @@ const config = convict({
 
 const env = config.get('env');
 const envFilePath = path.resolve(__dirname, `${env}.json`);
+// eslint-disable-next-line no-sync
 if (fs.existsSync(envFilePath)) {
 	config.loadFile(envFilePath);
 }
 
+
+// eslint-disable-next-line no-sync
+if (fs.existsSync(path.resolve(configFilePath))) {
+	config.loadFile(configFilePath);
+}
+
 config.validate({allowed: 'strict'});
+
+/*
+ * Save the config to a file
+ * TODO: Add this as a hook on the config.get() function
+ */
+config.save = () => {
+	return new Promise((resolve, reject) => {
+		fs.writeFile(configFilePath, config.toString(), 'utf8', error => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve();
+			}
+		});
+	});
+};
 
 module.exports = config;
