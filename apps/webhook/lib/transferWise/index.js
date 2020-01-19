@@ -1,4 +1,4 @@
-const config = require('../../../config');
+const config = require('../../../../config');
 const fetch = require('isomorphic-fetch');
 
 module.exports._sendRequest = async (method, path, body) => {

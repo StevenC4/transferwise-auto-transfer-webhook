@@ -1,6 +1,6 @@
 const http = require('http');
 const config = require('../config');
-const webhookApp = require('./webhook/server');
+const webhookApp = require('./webhook/app');
 
 /**
  * Create HTTP server

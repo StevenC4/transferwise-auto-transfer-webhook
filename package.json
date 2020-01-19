@@ -4,8 +4,8 @@
   "description": "An express server to handle transferwise webhook calls and make transferwise API calls",
   "main": "app/index.js",
   "scripts": {
-    "start": "node ./app/index.js",
-    "eslint": "eslint ./app/**/*.js",
+    "start": "node ./apps/index.js",
+    "eslint": "eslint ./apps/**/*.js",
     "eslint-fix": "eslint --fix ./app/**/*.js",
     "get-profile": "node ./scripts/getProfile.js",
     "get-accounts": "node ./scripts/getAccounts.js",
