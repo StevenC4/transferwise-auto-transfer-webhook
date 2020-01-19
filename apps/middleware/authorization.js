@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('../../../config');
 const crypto = require('crypto');
 
 const publicKey = Buffer.from(config.get('transferWise.publicKey'), 'base64');

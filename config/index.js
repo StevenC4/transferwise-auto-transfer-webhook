@@ -3,10 +3,31 @@ const fs = require('fs');
 const path = require('path');
 
 const config = convict({
-	appName: {
-		doc: 'The application name',
-		format: String,
-		default: 'transferwise-webhook'
+	apps: {
+		webhook: {
+			name: {
+				doc: 'The application name',
+				format: String,
+				default: 'transferwise-webhook'
+			},
+			port: {
+				doc: 'The port on which the server of the transferwise webhook',
+				format: 'port',
+				default: 8121
+			}
+		},
+		configUI: {
+			name: {
+				doc: 'The application name',
+				format: String,
+				default: 'transferwise-webhook-config-ui'
+			},
+			port: {
+				doc: 'The port on which the server of the transferwise webhook configuration UI',
+				format: 'port',
+				default: 8122
+			}
+		}
 	},
 	cors: {
 		origin: {
@@ -74,18 +95,6 @@ const config = convict({
 			}
 		}
 	},
-	ports: {
-		webhook: {
-			doc: 'The port on which the webhook will listen',
-			format: 'port',
-			default: 8121
-		},
-		configUI: {
-			doc: 'The port on which the server of the configuration UI',
-			format: 'port',
-			default: 8121
-		}
-	},
 	transferWise: {
 		account: {
 			source: {
@@ -103,7 +112,7 @@ const config = convict({
 					default: 0,
 					env: 'TRANSFERWISE_TARGET_ACCOUNT_ID'
 				}
-			},
+			}
 		},
 		api: {
 			baseUrl: {
@@ -123,7 +132,7 @@ const config = convict({
 				id: {
 					doc: 'The identifier of the source balance',
 					format: 'integer',
-					default: '',
+					default: 0,
 					env: 'TRANSFERWISE_SOURCE_BALANCE_ID'
 				}
 			}

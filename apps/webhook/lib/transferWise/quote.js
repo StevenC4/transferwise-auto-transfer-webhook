@@ -1,5 +1,5 @@
-const {_sendRequest} = require('./');
-const validator = require('../../lib/validator');
+const {_sendRequest} = require('.');
+const validator = require('../validator');
 
 module.exports.create = async body => {
     const valid = validator.validate('apiRequestBodies/createQuote.json#', body);

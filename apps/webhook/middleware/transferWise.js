@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const config = require('../../config');
+const config = require('../../../config');
 const logger = require('../lib/loggers/transferWise');
 const transferWise = require('../lib/transferWise');
 const uuidv4 = require('uuid/v4');

@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('../../../config');
 const logger = require('../lib/loggers/transferWise');
 
 module.exports.logBalanceAccountEvent = (req, _res, next) => {

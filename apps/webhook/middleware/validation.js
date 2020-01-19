@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('../../../config');
 const validator = require('../lib/validator');
 const logger = require('../lib/loggers/transferWise');
 

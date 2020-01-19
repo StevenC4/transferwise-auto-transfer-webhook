@@ -1,5 +1,5 @@
 const bodyParser = require('body-parser');
-const config = require('../config');
+const config = require('../../config');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
@@ -9,6 +9,10 @@ const authorizationMiddleware = require('./middleware/authorization');
 const routes = require('./routes');
 
 const app = express();
+app.customFields = {
+    name: config.get('apps.webhook.name'),
+    port: config.get('apps.webhook.port')
+};
 
 app.use(cors(config.get('cors')));
 app.use(helmet());
