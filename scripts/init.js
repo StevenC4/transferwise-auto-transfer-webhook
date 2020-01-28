@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const config = require('../config');
+const prompts = require('prompts');
 const readline = require('readline');
 const transferWise = require('../app/lib/transferWise');
 const util = require('util');
@@ -14,6 +15,32 @@ const processAnswer = answer => answer.trim();
 const question = questionText => new Promise(resolve => rl.question(questionText, answer => resolve(processAnswer(answer))));
 
 (async () => {
+	let promptApiKey;
+	if (config.get('transferWise.api.key')) {
+		const response = await prompts({
+			type: 'confirm',
+			name: 'overwriteApiKey',
+			message: 'It looks like you already have an API key set. Would you like to overwrite it?',
+			initial: false
+		});
+		console.log(response);
+	} else {
+		promptApiKey = true;
+	}
+
+	if (promptApiKey) {
+		const response = await prompts({
+			type: 'text',
+			name: 'apiKey',
+			message: 'Enter your TransferWise API key:',
+			validate: apiKey => (typeof apiKey === "string" || apiKey instanceof String) && apiKey.length
+		});
+		console.log(response);
+	}
+})();
+
+(async () => {
+	return;
 	// Obtain user's TransferWise API key
 	if (!config.get('transferWise.api.key')) {
 		const apiKey = await question('Enter your TransferWise API key: ');
@@ -107,5 +134,5 @@ const question = questionText => new Promise(resolve => rl.question(questionText
 	rl.close();
 
 	// TODO: Write out to env file
-	
+
 })();
