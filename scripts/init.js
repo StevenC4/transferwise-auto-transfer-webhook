@@ -15,27 +15,31 @@ const processAnswer = answer => answer.trim();
 const question = questionText => new Promise(resolve => rl.question(questionText, answer => resolve(processAnswer(answer))));
 
 (async () => {
-	let promptApiKey;
-	if (config.get('transferWise.api.key')) {
-		const response = await prompts({
-			type: 'confirm',
+	const response = await prompts([
+		{
+			type: config.get('transferWise.api.key') ? 'confirm' : null,
 			name: 'overwriteApiKey',
 			message: 'It looks like you already have an API key set. Would you like to overwrite it?',
 			initial: false
-		});
-		console.log(response);
-	} else {
-		promptApiKey = true;
-	}
-
-	if (promptApiKey) {
-		const response = await prompts({
-			type: 'text',
+		},
+		{
+			type: overwriteApiKey => {
+				if (config.get('transferWise.api.key') && overwriteApiKey) {
+					return 'password';
+				} else if (!config.get('transferWise.api.key')) {
+					return 'password';
+				} else {
+					return null;
+				}
+			},
 			name: 'apiKey',
 			message: 'Enter your TransferWise API key:',
 			validate: apiKey => (typeof apiKey === "string" || apiKey instanceof String) && apiKey.length
-		});
-		console.log(response);
+		}
+	]);
+
+	if (response.apiKey) {
+		config.set('transferWise.api.key', response.apiKey);
 	}
 })();
 
