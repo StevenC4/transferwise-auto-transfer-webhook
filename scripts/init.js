@@ -134,31 +134,58 @@ const getProfileId = async () => {
 
 	let selectedProfileId;
 	if (promptProfileIds) {
-		do {
-			console.clear();
-			const {profileId} = await prompts({
-				type: 'select',
-				name: 'profileId',
-				message: 'Select a profile Id to see more information about the profile:',
-				choices: profiles.map(profile => ({title: profile.id, value: profile.id}))
-			});
-			const selectedProfile = profiles.find(profile => profile.id === profileId);
-			console.clear();
+		if (profiles.length === 0) {
+			console.log('I could not find any profiles for your account. Please set up a profile first and then try again.');
+			process.exit(1);
+		} else if (profiles.length === 1) {
+			console.log(`I only found one profile for your account:`);
+
 			logBoundary();
-			nestedLog(selectedProfile);
+			nestedLog(profiles[0]);
 			logBoundary();
-			console.log();
-			const {useSelectedProfile} = await prompts({
+
+			const {useProfile} = await prompts({
 				type: 'confirm',
-				name: 'useSelectedProfile',
-				message: 'Would you like to select this as your profile Id?',
-				initial: false
+				name: 'useProfile',
+				message: 'Is this the correct profile to use?',
+				initial: true
 			});
 
-			if (useSelectedProfile) {
-				selectedProfileId = profileId
+			if (useProfile) {
+				console.log('OK! Using profile and proceeding.');
+
+				return profiles[0].id;
+			} else {
+				console.log('Understood. Please set up the correct profile first and then try again.');
+				process.exit(1);
 			}
-		} while (!selectedProfileId);
+		} else {
+			do {
+				console.clear();
+				const {profileId} = await prompts({
+					type: 'select',
+					name: 'profileId',
+					message: 'Select a profile Id to see more information about the profile:',
+					choices: profiles.map(profile => ({title: profile.id, value: profile.id}))
+				});
+				const selectedProfile = profiles.find(profile => profile.id === profileId);
+				console.clear();
+				logBoundary();
+				nestedLog(selectedProfile);
+				logBoundary();
+				console.log();
+				const {useSelectedProfile} = await prompts({
+					type: 'confirm',
+					name: 'useSelectedProfile',
+					message: 'Would you like to select this as your profile Id?',
+					initial: false
+				});
+
+				if (useSelectedProfile) {
+					selectedProfileId = profileId
+				}
+			} while (!selectedProfileId);
+		}
 	}
 
 	return selectedProfileId;
