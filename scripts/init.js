@@ -14,7 +14,47 @@ const rl = readline.createInterface({
 const processAnswer = answer => answer.trim();
 const question = questionText => new Promise(resolve => rl.question(questionText, answer => resolve(processAnswer(answer))));
 
-(async () => {
+const nestedLog = (object, level = 0) => {
+	if (typeof object === 'object') {
+		for (let key in object) {
+			if (object[key] === undefined || object[key] === null) {
+				continue;
+			}
+			else if (typeof object[key] === "object") {
+				logWithTabLevel(`${splitCamelCase(key)}:`, level);
+				nestedLog(object[key], level + 1);
+			} else {
+				logWithTabLevel(`${splitCamelCase(key)}: ${object[key]}`, level);
+			}
+		}
+	} else if (typeof object === 'array') {
+		object.forEach(item => nestedLog(item, level + 1));
+	} else {
+		logWithTabLevel(object, level);
+	}
+};
+
+const logWithTabLevel = (item, level) => {
+	let output = '';
+	for (let i = 0; i < level; i++) {
+		output += '\t';
+	}
+	output += item;
+	console.log(output);
+};
+
+const splitCamelCase = string => string
+		// Look for long acronyms and filter out the last letter
+		.replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+		// Look for lower-case letters followed by upper-case letters
+		.replace(/([a-z\d])([A-Z])/g, '$1 $2')
+		// Look for lower-case letters followed by numbers
+		.replace(/([a-zA-Z])(\d)/g, '$1 $2')
+		.replace(/^./, function(str){ return str.toUpperCase(); })
+		// Remove any white space left around the word
+		.trim();
+
+const getTransferWiseApiKey = async () => {
 	const response = await prompts([
 		{
 			type: config.get('transferWise.api.key') ? 'confirm' : null,
@@ -34,23 +74,71 @@ const question = questionText => new Promise(resolve => rl.question(questionText
 			},
 			name: 'apiKey',
 			message: 'Enter your TransferWise API key:',
-			validate: apiKey => (typeof apiKey === "string" || apiKey instanceof String) && apiKey.length
+			validate: apiKey => (typeof apiKey === "string" || apiKey instanceof String) && apiKey.length,
 		}
 	]);
 
-	if (response.apiKey) {
+	return response.apiKey;
+};
+
+const getProfileId = async () => {
+	let promptProfileIds = true;
+	let profiles;
+	if (config.get('transferWise.profile.id')) {
+		let overwriteResponse;
+		do {
+			overwriteResponse = await prompts({
+				type: 'select',
+				name: 'action',
+				message: `You currently have a profile Id set (${config.get('transferWise.profile.id')}).\nDo you want to overwrite this value?`,
+				choices: [
+					{title: 'Yes', value: 'overwrite'},
+					{title: 'No', value: 'keep'},
+					{title: 'View profile information', value: 'show'}
+				],
+				initial: 1
+			});
+
+			if (overwriteResponse.action === 'show') {
+				profiles = await transferWise.profiles.get();
+				const prepopulatedProfile = profiles.find(profile => profile.id === config.get('transferWise.profile.id'));
+				if (prepopulatedProfile) {
+					console.log();
+					nestedLog(prepopulatedProfile);
+					console.log();
+				} else {
+					console.log('Selected profile Id not found among your transferWise profiles. Proceeding to overwrite your selected profile Id.');
+					overwriteResponse.action = 'overwrite';
+				}
+			}
+		} while (overwriteResponse.action === 'show');
+
+		promptProfileIds = overwriteResponse === 'overwrite';
+	}
+
+	if (promptProfileIds) {
+		if (!profiles) {
+			profiles = await transferWise.profiles.get();
+		}
+
+		const response = await prompt({
+			type: 'select'
+		});
+	}
+};
+
+(async () => {
+	const apiKey = await getTransferWiseApiKey();
+	if (apiKey) {
 		config.set('transferWise.api.key', response.apiKey);
 	}
+
+	// Get user's TransferWise profile Id
+	const profileId = await getProfileId();
 })();
 
 (async () => {
 	return;
-	// Obtain user's TransferWise API key
-	if (!config.get('transferWise.api.key')) {
-		const apiKey = await question('Enter your TransferWise API key: ');
-		console.log();
-		config.set('transferWise.api.key', apiKey);
-	}
 
 	// Obtain user's TransferWise profile Id
 	if (!config.get('transferWise.profile.id')) {
