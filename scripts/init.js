@@ -12,7 +12,7 @@ const util = require('util');
 // Utilities
 
 const nestedLog = (object, level = 0) => {
-	if (typeof object === 'object') {
+	if (object !== null && typeof object === 'object') {
 		for (const key in object) {
 			if (object[key] === undefined || object[key] === null) {
 				continue;
