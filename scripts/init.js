@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable max-depth */
 /* eslint-disable dot-location */
 const dotenv = require('dotenv');
@@ -34,6 +35,8 @@ const nestedLog = (object, level = 0) => {
 		logWithTabLevel(object, level);
 	}
 };
+
+const logBoundary = () => console.log('---------------------------------------------------------------------');
 
 const logWithTabLevel = (item, level) => {
 	let output = '';
@@ -114,9 +117,9 @@ const getProfileId = async () => {
 				if (overwriteResponse.action === 'show') {
 					if (prepopulatedProfile) {
 						console.clear();
-						console.log('---------------------------------------------------------------------');
+						logBoundary();
 						nestedLog(prepopulatedProfile);
-						console.log('---------------------------------------------------------------------');
+						logBoundary();
 						console.log();
 					} else {
 						console.log('Selected profile Id not found among your transferWise profiles. Proceeding to overwrite your selected profile Id.');
@@ -129,11 +132,36 @@ const getProfileId = async () => {
 		}
 	}
 
+	let selectedProfileId;
 	if (promptProfileIds) {
-		const response = await prompts({
-			type: 'select'
-		});
+		do {
+			console.clear();
+			const {profileId} = await prompts({
+				type: 'select',
+				name: 'profileId',
+				message: 'Select a profile Id to see more information about the profile:',
+				choices: profiles.map(profile => ({title: profile.id, value: profile.id}))
+			});
+			const selectedProfile = profiles.find(profile => profile.id === profileId);
+			console.clear();
+			logBoundary();
+			nestedLog(selectedProfile);
+			logBoundary();
+			console.log();
+			const {useSelectedProfile} = await prompts({
+				type: 'confirm',
+				name: 'useSelectedProfile',
+				message: 'Would you like to select this as your profile Id?',
+				initial: false
+			});
+
+			if (useSelectedProfile) {
+				selectedProfileId = profileId
+			}
+		} while (!selectedProfileId);
 	}
+
+	return selectedProfileId;
 };
 
 (async () => {
@@ -144,6 +172,9 @@ const getProfileId = async () => {
 
 	// Get user's TransferWise profile Id
 	const profileId = await getProfileId();
+	if (profileId) {
+		config.set('transferWise.profile.id', profileId);
+	}
 })();
 
 // eslint-disable-next-line max-lines-per-function
