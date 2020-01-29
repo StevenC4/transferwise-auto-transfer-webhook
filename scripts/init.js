@@ -1,3 +1,5 @@
+/* eslint-disable max-depth */
+/* eslint-disable dot-location */
 const dotenv = require('dotenv');
 dotenv.config();
 const config = require('../config');
@@ -16,18 +18,17 @@ const question = questionText => new Promise(resolve => rl.question(questionText
 
 const nestedLog = (object, level = 0) => {
 	if (typeof object === 'object') {
-		for (let key in object) {
+		for (const key in object) {
 			if (object[key] === undefined || object[key] === null) {
 				continue;
-			}
-			else if (typeof object[key] === "object") {
+			} else if (typeof object[key] === "object") {
 				logWithTabLevel(`${splitCamelCase(key)}:`, level);
 				nestedLog(object[key], level + 1);
 			} else {
 				logWithTabLevel(`${splitCamelCase(key)}: ${object[key]}`, level);
 			}
 		}
-	} else if (typeof object === 'array') {
+	} else if (Array.isArray(object)) {
 		object.forEach(item => nestedLog(item, level + 1));
 	} else {
 		logWithTabLevel(object, level);
@@ -36,6 +37,8 @@ const nestedLog = (object, level = 0) => {
 
 const logWithTabLevel = (item, level) => {
 	let output = '';
+	// eslint-disable-next-line id-length
+	// eslint-disable-next-line no-plusplus
 	for (let i = 0; i < level; i++) {
 		output += '\t';
 	}
@@ -45,12 +48,12 @@ const logWithTabLevel = (item, level) => {
 
 const splitCamelCase = string => string
 		// Look for long acronyms and filter out the last letter
-		.replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+		.replace(/(?<acronym>[A-Z]+)(?<nextWord>[A-Z][a-z])/gu, ' $<acronym> $<nextWord>')
 		// Look for lower-case letters followed by upper-case letters
-		.replace(/([a-z\d])([A-Z])/g, '$1 $2')
+		.replace(/(?<lower>[a-z\d])(?<upper>[A-Z])/gu, '$<lower> $<upper>')
 		// Look for lower-case letters followed by numbers
-		.replace(/([a-zA-Z])(\d)/g, '$1 $2')
-		.replace(/^./, function(str){ return str.toUpperCase(); })
+		.replace(/(?<lower>[a-zA-Z])(?<number>\d)/gu, '$<lower> $<number>')
+		.replace(/^./u, str => str.toUpperCase())
 		// Remove any white space left around the word
 		.trim();
 
@@ -74,54 +77,60 @@ const getTransferWiseApiKey = async () => {
 			},
 			name: 'apiKey',
 			message: 'Enter your TransferWise API key:',
-			validate: apiKey => (typeof apiKey === "string" || apiKey instanceof String) && apiKey.length,
+			validate: apiKey => (typeof apiKey === "string" || apiKey instanceof String) && apiKey.length
 		}
 	]);
 
 	return response.apiKey;
 };
 
+// eslint-disable-next-line max-lines-per-function
 const getProfileId = async () => {
 	let promptProfileIds = true;
-	let profiles;
+	const profiles = await transferWise.profiles.get();
 	if (config.get('transferWise.profile.id')) {
-		let overwriteResponse;
-		do {
-			overwriteResponse = await prompts({
-				type: 'select',
-				name: 'action',
-				message: `You currently have a profile Id set (${config.get('transferWise.profile.id')}).\nDo you want to overwrite this value?`,
-				choices: [
-					{title: 'Yes', value: 'overwrite'},
-					{title: 'No', value: 'keep'},
-					{title: 'View profile information', value: 'show'}
-				],
-				initial: 1
-			});
+		console.log(`You currently have a profile Id set (${config.get('transferWise.profile.id')}).`);
 
-			if (overwriteResponse.action === 'show') {
-				profiles = await transferWise.profiles.get();
-				const prepopulatedProfile = profiles.find(profile => profile.id === config.get('transferWise.profile.id'));
-				if (prepopulatedProfile) {
-					console.log();
-					nestedLog(prepopulatedProfile);
-					console.log();
-				} else {
-					console.log('Selected profile Id not found among your transferWise profiles. Proceeding to overwrite your selected profile Id.');
-					overwriteResponse.action = 'overwrite';
+		const prepopulatedProfile = profiles.find(profile => profile.id === config.get('transferWise.profile.id'));
+
+		if (!prepopulatedProfile) {
+			console.log('I could not find your selected profile Id among your transferWise profiles. Proceeding to overwrite your selected profile Id.');
+		} else {
+			let overwriteResponse;
+			do {
+				// eslint-disable-next-line no-await-in-loop
+				overwriteResponse = await prompts({
+					type: 'select',
+					name: 'action',
+					message: `You currently have a profile Id set (${config.get('transferWise.profile.id')}).\nDo you want to overwrite this value?`,
+					choices: [
+						{title: 'Yes', value: 'overwrite'},
+						{title: 'No', value: 'keep'},
+						{title: 'View profile information', value: 'show'}
+					],
+					initial: 1
+				});
+
+				if (overwriteResponse.action === 'show') {
+					if (prepopulatedProfile) {
+						console.clear();
+						console.log('---------------------------------------------------------------------');
+						nestedLog(prepopulatedProfile);
+						console.log('---------------------------------------------------------------------');
+						console.log();
+					} else {
+						console.log('Selected profile Id not found among your transferWise profiles. Proceeding to overwrite your selected profile Id.');
+						overwriteResponse.action = 'overwrite';
+					}
 				}
-			}
-		} while (overwriteResponse.action === 'show');
+			} while (overwriteResponse.action === 'show');
 
-		promptProfileIds = overwriteResponse === 'overwrite';
+			promptProfileIds = overwriteResponse.action === 'overwrite';
+		}
 	}
 
 	if (promptProfileIds) {
-		if (!profiles) {
-			profiles = await transferWise.profiles.get();
-		}
-
-		const response = await prompt({
+		const response = await prompts({
 			type: 'select'
 		});
 	}
@@ -130,17 +139,19 @@ const getProfileId = async () => {
 (async () => {
 	const apiKey = await getTransferWiseApiKey();
 	if (apiKey) {
-		config.set('transferWise.api.key', response.apiKey);
+		config.set('transferWise.api.key', apiKey);
 	}
 
 	// Get user's TransferWise profile Id
 	const profileId = await getProfileId();
 })();
 
+// eslint-disable-next-line max-lines-per-function
 (async () => {
 	return;
 
 	// Obtain user's TransferWise profile Id
+	// eslint-disable-next-line no-unreachable
 	if (!config.get('transferWise.profile.id')) {
 		console.log('Discovering your TransferWise profile Id...');
 		const profiles = await transferWise.profiles.get();
