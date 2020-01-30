@@ -261,22 +261,22 @@ const getSourceAccountId = async () => {
 					type: 'select',
 					name: 'sourceAccount',
 					message: 'Select a source account Id to see more information about the borderless account:',
-					choices: sourceAccounts.map(profile => ({title: profile.id, value: profile.id}))
+					choices: sourceAccounts.map(sourceAccount => ({title: sourceAccount.id, value: sourceAccount.id}))
 				});
-				const selectedProfile = sourceAccounts.find(profile => profile.id === sourceAccount);
+				const selectedSourceAccount = sourceAccounts.find(sourceAccount => sourceAccount.id === sourceAccount);
 				console.clear();
 				logBoundary();
-				nestedLog(selectedProfile);
+				nestedLog(selectedSourceAccount);
 				logBoundary();
 				console.log();
-				const {useSelectedProfile} = await prompts({
+				const {useSelectedSourceAccount} = await prompts({
 					type: 'confirm',
-					name: 'useSelectedProfile',
+					name: 'useSelectedSourceAccount',
 					message: 'Would you like to select this as your source account Id?',
 					initial: false
 				});
 
-				if (useSelectedProfile) {
+				if (useSelectedSourceAccount) {
 					selectedSourceAccountId = sourceAccount;
 				}
 			} while (!selectedSourceAccountId);
@@ -286,6 +286,106 @@ const getSourceAccountId = async () => {
 	return selectedSourceAccountId;
 };
 
+const getTargetAccountId = async () => {
+	console.clear();
+	let promptTargetAccountId = true;
+	const targetAccounts = await transferWise.accounts.get();
+	if (config.get('transferWise.account.target.id')) {
+		console.log(`You currently have a target account Id set (${config.get('transferWise.account.target.id')}).`);
+		const prepopulatedTargetAccount = targetAccounts.find(targetAccount => targetAccount.id === config.get('transferWise.account.target.id'));
+
+		if (!prepopulatedTargetAccount) {
+			console.log('I could not find your selected target account Id among your transferWise accounts. Proceeding to overwrite your selected target account Id.');
+		} else {
+			let overwriteResponse;
+			do {
+				// eslint-disable-next-line no-await-in-loop
+				overwriteResponse = await prompts({
+					type: 'select',
+					name: 'action',
+					message: `Do you want to overwrite this value (${config.get('transferWise.account.target.id')})?`,
+					choices: [
+						{title: 'Yes', value: 'overwrite'},
+						{title: 'No', value: 'keep'},
+						{title: 'View target account information', value: 'show'}
+					],
+					initial: 1
+				});
+
+				if (overwriteResponse.action === 'show') {
+					console.clear();
+					logBoundary();
+					nestedLog(prepopulatedTargetAccount);
+					logBoundary();
+					console.log();
+				}
+			} while (overwriteResponse.action === 'show');
+
+			promptTargetAccountId = overwriteResponse.action === 'overwrite';
+		}
+	}
+
+	let selectedTargetAccountId;
+	if (promptTargetAccountId) {
+		if (targetAccounts.length === 0) {
+			console.clear();
+			console.log('I could not find any recipient accounts for your TransferWise account. Please set up a recipient account first and then try again.');
+			process.exit(1);
+		} else if (targetAccounts.length === 1) {
+			console.clear();
+			console.log(`I only found one recipient account for your TransferWise account:`);
+
+			logBoundary();
+			nestedLog(targetAccounts[0]);
+			logBoundary();
+
+			const {useTargetAccount} = await prompts({
+				type: 'confirm',
+				name: 'useTargetAccount',
+				message: 'Is this the correct recipient account to use?',
+				initial: true
+			});
+
+			if (useTargetAccount) {
+				console.log('OK! Using recipient account and proceeding.');
+
+				return targetAccounts[0].id;
+			} else {
+				console.log('Understood. Please set up the correct recipient account first and then try again.');
+				process.exit(1);
+			}
+		} else {
+			do {
+				console.clear();
+				const {targetAccountId} = await prompts({
+					type: 'select',
+					name: 'targetAccountId',
+					message: 'Select a target account Id to see more information about the recipient account:',
+					choices: targetAccounts.map(targetAccount => ({title: targetAccount.id, value: targetAccount.id})),
+					format: (val, _vals) => parseInt(val)
+				});
+				const selectedTargetAccount = targetAccounts.find(targetAccount => targetAccount.id === targetAccountId);
+				console.clear();
+				logBoundary();
+				nestedLog(selectedTargetAccount);
+				logBoundary();
+				console.log();
+				const {useSelectedTargetAccount} = await prompts({
+					type: 'confirm',
+					name: 'useSelectedTargetAccount',
+					message: 'Would you like to select this as your target account Id?',
+					initial: false
+				});
+
+				if (useSelectedTargetAccount) {
+					selectedTargetAccountId = targetAccountId;
+				}
+			} while (!selectedTargetAccountId);
+		}
+	}
+
+	return selectedTargetAccountId;
+};
 
 (async () => {
 	const apiKey = await getTransferWiseApiKey();
@@ -301,7 +401,12 @@ const getSourceAccountId = async () => {
 
 	const sourceAccountId = await getSourceAccountId();
 	if (sourceAccountId) {
-		config.set('transferWise.account.source.id')
+		config.set('transferWise.account.source.id', sourceAccountId);
+	}
+
+	const targetAccountId = await getTargetAccountId();
+	if (targetAccountId) {
+		config.set('transferWise.account.target.id', targetAccountId);
 	}
 })();
 
@@ -311,24 +416,6 @@ const getSourceAccountId = async () => {
 
 	// Obtain user's TransferWise source account Id
 	// eslint-disable-next-line no-unreachable
-	if (!config.get('transferWise.account.source.id')) {
-		console.log('Discovering your source accounts...');
-		const sourceAccounts = await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id'));
-		console.log(util.inspect(sourceAccounts, {showHidden: false, depth: null}));
-		const sourceAccountId = await question(`Review the list of accounts and enter the "id" field from the desired source account here: `);
-
-		sourceAccountId = parseInt(sourceAccountId, 10);
-		if (sourceAccountId === NaN) {
-			console.log();
-			console.error('Error: The account Id you have entered is not an integer. TransferWise uses integer account ids.');
-			rl.close();
-			process.exit(1);
-		}
-
-		console.log();
-		config.set('transferWise.account.source.id', sourceAccountId);
-	}
-
 	// Obtain user's TransferWise target account Id
 	if (!config.get('transferWise.account.target.id')) {
 		console.log('Discovering your linked recipient accounts...');
