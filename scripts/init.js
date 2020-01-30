@@ -361,8 +361,7 @@ const getTargetAccountId = async () => {
 					type: 'select',
 					name: 'targetAccountId',
 					message: 'Select a target account Id to see more information about the recipient account:',
-					choices: targetAccounts.map(targetAccount => ({title: targetAccount.id, value: targetAccount.id})),
-					format: (val, _vals) => parseInt(val)
+					choices: targetAccounts.map(targetAccount => ({title: targetAccount.id, value: targetAccount.id}))
 				});
 				const selectedTargetAccount = targetAccounts.find(targetAccount => targetAccount.id === targetAccountId);
 				console.clear();
