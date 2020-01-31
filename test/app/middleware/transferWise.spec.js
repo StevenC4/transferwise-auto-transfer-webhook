@@ -101,7 +101,7 @@ describe('app/middleware/transferWise.js', () => {
         });
         const createQuote = promisify(transferWiseMiddleware.createQuote);
         let createQuoteStub, logStub;
-        let req, createQuoteParams;
+        let createQuoteParams, req;
         let shouldLog;
 
         before(() => {
@@ -140,7 +140,7 @@ describe('app/middleware/transferWise.js', () => {
         after(() => {
             sandbox.restore();
         });
-        
+
         it('should return an error when the TransferWise API call returns a rejected promise', async () => {
             const apiError = new Error('There was an error when calling the create quote API');
             createQuoteStub.rejects(apiError);
@@ -196,7 +196,7 @@ describe('app/middleware/transferWise.js', () => {
         });
         const createTransfer = promisify(transferWiseMiddleware.createTransfer);
         let createTransferStub, logStub;
-        let req, createTransferParams;
+        let createTransferParams, req;
         let shouldLog;
 
         before(() => {
@@ -232,7 +232,7 @@ describe('app/middleware/transferWise.js', () => {
         after(() => {
             sandbox.restore();
         });
-        
+
         it('should return an error when the TransferWise API call returns a rejected promise', async () => {
             const apiError = new Error('There was an error when calling the create transfer API');
             createTransferStub.rejects(apiError);
@@ -277,6 +277,90 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(createTransferStub, createTransferParams);
             sandbox.assert.calledWith(logStub, {transfer});
+            assert.deepEqual(req, expectedReq);
+        });
+    });
+
+    describe('fundTransfer', () => {
+        const uuidv4 = sandbox.stub();
+        transferWiseMiddleware = proxyquire('../../../app/middleware/transferWise', {
+            'uuid/v4': uuidv4
+        });
+        const fundTransfer = promisify(transferWiseMiddleware.fundTransfer);
+        let profileId, req, transferId;
+        let fundTransferStub, logStub;
+        let shouldLog;
+
+        before(() => {
+            uuidv4.returns(uuid);
+            shouldLog = config.get('logs.transferWise.log');
+            fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+            logStub = sandbox.stub(logger, 'info');
+        });
+
+        beforeEach(() => {
+            profileId = 15243;
+            transferId = 'test transfer id';
+            req = {
+                transfer: {
+                    id: transferId
+                }
+            };
+        });
+
+        afterEach(() => {
+            sandbox.reset();
+            config.set('logs.transferWise.log', shouldLog);
+        });
+
+        after(() => {
+            sandbox.restore();
+        });
+
+        it('should return an error when the TransferWise API call returns a rejected promise', async () => {
+            const apiError = new Error('There was an error when calling the create transfer API');
+            fundTransferStub.rejects(apiError);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            const error = await fundTransfer(req, {}).catch(err => err);
+            assert.notStrictEqual(error, undefined);
+            assert.strictEqual(error, apiError);
+            sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should return an error when the TransferWise API call throws an expection', async () => {
+            const apiError = new Error('There was an error when calling the create transfer API');
+            fundTransferStub.throws(apiError);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            const error = await fundTransfer(req, {}).catch(err => err);
+            assert.notStrictEqual(error, undefined);
+            assert.strictEqual(error, apiError);
+            sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should succeed and not log the output', async () => {
+            const transferStatus = 'transfer status placeholder';
+            fundTransferStub.resolves(transferStatus);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            expectedReq.transferStatus = transferStatus;
+            const error = await fundTransfer(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
+            sandbox.assert.notCalled(logStub);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should succeed and log the output', async () => {
+            config.set('logs.transferWise.log', true);
+            const transferStatus = 'transfer status placeholder';
+            fundTransferStub.resolves(transferStatus);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            expectedReq.transferStatus = transferStatus;
+            const error = await fundTransfer(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
+            sandbox.assert.calledWith(logStub, {transferStatus});
             assert.deepEqual(req, expectedReq);
         });
     });
