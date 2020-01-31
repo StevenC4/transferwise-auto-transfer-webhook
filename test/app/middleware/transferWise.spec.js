@@ -2,8 +2,10 @@
 const assert = require('assert');
 const transferWiseMiddleware = require('../../../app/middleware/transferWise');
 const transferWise = require('../../../app/lib/transferWise');
+const logger = require('../../../app/lib/loggers/transferWise');
 const {promisify} = require('util');
 const sandbox = require('sinon').createSandbox();
+const config = require('../../../config');
 
 describe('app/middleware/transferWise.js', () => {
     describe('getTargetAccount', () => {
@@ -78,6 +80,89 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledOnce(getAccountStub);
             assert.deepEqual(req, {targetAccount: {id: 14141}});
+        });
+    });
+
+    describe('createQuote', () => {
+        const createQuote = promisify(transferWiseMiddleware.createQuote);
+        let createQuoteStub, logStub;
+        let req;
+        let shouldLog;
+
+        before(() => {
+            shouldLog = config.get('logs.transferWise.log');
+            createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+            logStub = sandbox.stub(logger, 'info');
+        });
+
+        beforeEach(() => {
+            req = {
+                body: {
+                    data: {
+                        amount: 1234.56,
+                        currency: 'EUR'
+                    }
+                },
+                targetAccount: {
+                    currency: 'USD'
+                }
+            };
+        });
+
+        afterEach(() => {
+            sandbox.reset();
+            config.set('logs.transferWise.log', shouldLog);
+        });
+
+        after(() => {
+            sandbox.restore();
+        });
+        
+        it('should return an error when the TransferWise API call returns a rejected promise', async () => {
+            const apiError = new Error('There was an error when calling the create quote API');
+            createQuoteStub.rejects(apiError);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            const error = await createQuote(req, {}).catch(err => err);
+            assert.notStrictEqual(error, undefined);
+            assert.strictEqual(error, apiError);
+            sandbox.assert.calledOnce(createQuoteStub);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should return an error when the TransferWise API call throws an expection', async () => {
+            const apiError = new Error('There was an error when calling the create quote API');
+            createQuoteStub.throws(apiError);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            const error = await createQuote(req, {}).catch(err => err);
+            assert.notStrictEqual(error, undefined);
+            assert.strictEqual(error, apiError);
+            sandbox.assert.calledOnce(createQuoteStub);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should succeed and not log the output', async () => {
+            const quote = 'quote placeholder';
+            createQuoteStub.resolves(quote);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            expectedReq.quote = quote;
+            const error = await createQuote(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.notCalled(logStub);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should succeed and log the output', async () => {
+            config.set('logs.transferWise.log', true);
+            const quote = 'quote placeholder';
+            createQuoteStub.resolves(quote);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            expectedReq.quote = quote;
+            const error = await createQuote(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(logStub, {quote});
+            assert.deepEqual(req, expectedReq);
         });
     });
 });
