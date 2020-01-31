@@ -1,14 +1,25 @@
 /* eslint-disable max-lines-per-function */
 const assert = require('assert');
-const transferWiseMiddleware = require('../../../app/middleware/transferWise');
-const transferWise = require('../../../app/lib/transferWise');
+const config = require('../../../config');
 const logger = require('../../../app/lib/loggers/transferWise');
 const {promisify} = require('util');
+const proxyquire = require('proxyquire');
 const sandbox = require('sinon').createSandbox();
-const config = require('../../../config');
+const transferWise = require('../../../app/lib/transferWise');
+let transferWiseMiddleware
 
 describe('app/middleware/transferWise.js', () => {
+    const uuid = 'sample-uuid-value-12354';
+
+    after(() => {
+        sandbox.restore();
+    });
+
     describe('getTargetAccount', () => {
+        const uuidv4 = sandbox.stub().returns(uuid);
+        transferWiseMiddleware = proxyquire('../../../app/middleware/transferWise', {
+            'uuid/v4': uuidv4
+        });
         const getTargetAccount = promisify(transferWiseMiddleware.getTargetAccount);
         let getAccountStub;
 
@@ -84,9 +95,13 @@ describe('app/middleware/transferWise.js', () => {
     });
 
     describe('createQuote', () => {
+        const uuidv4 = sandbox.stub().returns(uuid);
+        transferWiseMiddleware = proxyquire('../../../app/middleware/transferWise', {
+            'uuid/v4': uuidv4
+        });
         const createQuote = promisify(transferWiseMiddleware.createQuote);
         let createQuoteStub, logStub;
-        let req;
+        let req, createQuoteParams;
         let shouldLog;
 
         before(() => {
@@ -107,6 +122,14 @@ describe('app/middleware/transferWise.js', () => {
                     currency: 'USD'
                 }
             };
+            createQuoteParams = {
+                profile: 15243,
+                rateType: 'FIXED',
+                source: 'EUR',
+                sourceAmount: 1234.56,
+                target: 'USD',
+                type: 'BALANCE_PAYOUT'
+            };
         });
 
         afterEach(() => {
@@ -125,7 +148,7 @@ describe('app/middleware/transferWise.js', () => {
             const error = await createQuote(req, {}).catch(err => err);
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
-            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
             assert.deepEqual(req, expectedReq);
         });
 
@@ -136,7 +159,7 @@ describe('app/middleware/transferWise.js', () => {
             const error = await createQuote(req, {}).catch(err => err);
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
-            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
             assert.deepEqual(req, expectedReq);
         });
 
@@ -147,7 +170,7 @@ describe('app/middleware/transferWise.js', () => {
             expectedReq.quote = quote;
             const error = await createQuote(req, {}).catch(err => err);
             assert.strictEqual(error, undefined);
-            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
             sandbox.assert.notCalled(logStub);
             assert.deepEqual(req, expectedReq);
         });
@@ -160,8 +183,100 @@ describe('app/middleware/transferWise.js', () => {
             expectedReq.quote = quote;
             const error = await createQuote(req, {}).catch(err => err);
             assert.strictEqual(error, undefined);
-            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
             sandbox.assert.calledWith(logStub, {quote});
+            assert.deepEqual(req, expectedReq);
+        });
+    });
+
+    describe('createTransfer', () => {
+        const uuidv4 = sandbox.stub();
+        transferWiseMiddleware = proxyquire('../../../app/middleware/transferWise', {
+            'uuid/v4': uuidv4
+        });
+        const createTransfer = promisify(transferWiseMiddleware.createTransfer);
+        let createTransferStub, logStub;
+        let req, createTransferParams;
+        let shouldLog;
+
+        before(() => {
+            uuidv4.returns(uuid);
+            shouldLog = config.get('logs.transferWise.log');
+            createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+            logStub = sandbox.stub(logger, 'info');
+        });
+
+        beforeEach(() => {
+            req = {
+                quote: {
+                    id: 543
+                }
+            };
+            createTransferParams = {
+                customerTransactionId: uuid,
+                details: {
+                    reference: 'Other',
+                    sourceOfFunds: 'Other',
+                    transferPurpose: 'Other'
+                },
+                quote: 543,
+                targetAccount: 14141
+            };
+        });
+
+        afterEach(() => {
+            sandbox.reset();
+            config.set('logs.transferWise.log', shouldLog);
+        });
+
+        after(() => {
+            sandbox.restore();
+        });
+        
+        it('should return an error when the TransferWise API call returns a rejected promise', async () => {
+            const apiError = new Error('There was an error when calling the create transfer API');
+            createTransferStub.rejects(apiError);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            const error = await createTransfer(req, {}).catch(err => err);
+            assert.notStrictEqual(error, undefined);
+            assert.strictEqual(error, apiError);
+            sandbox.assert.calledWith(createTransferStub, createTransferParams);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should return an error when the TransferWise API call throws an expection', async () => {
+            const apiError = new Error('There was an error when calling the create transfer API');
+            createTransferStub.throws(apiError);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            const error = await createTransfer(req, {}).catch(err => err);
+            assert.notStrictEqual(error, undefined);
+            assert.strictEqual(error, apiError);
+            sandbox.assert.calledWith(createTransferStub, createTransferParams);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should succeed and not log the output', async () => {
+            const transfer = 'transfer placeholder';
+            createTransferStub.resolves(transfer);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            expectedReq.transfer = transfer;
+            const error = await createTransfer(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledWith(createTransferStub, createTransferParams);
+            sandbox.assert.notCalled(logStub);
+            assert.deepEqual(req, expectedReq);
+        });
+
+        it('should succeed and log the output', async () => {
+            config.set('logs.transferWise.log', true);
+            const transfer = 'transfer placeholder';
+            createTransferStub.resolves(transfer);
+            const expectedReq = JSON.parse(JSON.stringify(req));
+            expectedReq.transfer = transfer;
+            const error = await createTransfer(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledWith(createTransferStub, createTransferParams);
+            sandbox.assert.calledWith(logStub, {transfer});
             assert.deepEqual(req, expectedReq);
         });
     });
