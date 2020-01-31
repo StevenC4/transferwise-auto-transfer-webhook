@@ -11,6 +11,7 @@
     "include": "app/**/*.js",
     "reporter": [
         "html",
-        "text"
+        "text",
+        "lcov"
     ]
 }
