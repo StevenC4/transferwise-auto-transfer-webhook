@@ -1,7 +1,7 @@
 {
 	"transferWise": {
 		"account": {
-			"source": {
+			"target": {
 				"id": 14141
 			}
 		},

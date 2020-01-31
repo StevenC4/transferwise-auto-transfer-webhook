@@ -62,5 +62,22 @@ describe('app/middleware/transferWise.js', () => {
             sandbox.assert.calledOnce(getAccountStub);
             assert.deepEqual(req, {targetAccount: undefined});
         });
+
+        it('should succeed when the chosen target account is found amon the API call results', async () => {
+            const accounts = [
+                {id: 1234},
+                {id: 2345},
+                {id: 14141},
+                {id: 3456},
+                {id: 4567}
+            ];
+            getAccountStub.resolves(accounts);
+
+            const req = {};
+            const error = await getTargetAccount(req, {}).catch(err => err);
+            assert.strictEqual(error, undefined);
+            sandbox.assert.calledOnce(getAccountStub);
+            assert.deepEqual(req, {targetAccount: {id: 14141}});
+        });
     });
 });
