@@ -6,9 +6,10 @@ const validator = require('../../../../app/lib/validator');
 
 describe('app/lib/transferWise/transfer', () => {
     describe('create', () => {
-        let sendRequestStub, validatorStub;
+        let consoleErrorStub, sendRequestStub, validatorStub;
 
         before(() => {
+            consoleErrorStub = sandbox.stub(console, 'error');
             sendRequestStub = sandbox.stub(transferWise, '_sendRequest');
             validatorStub = sandbox.stub(validator, 'validate');
         });
@@ -34,6 +35,7 @@ describe('app/lib/transferWise/transfer', () => {
             assert.strictEqual(error.message, 'Invalid request body');
             assert.strictEqual(error.validationErrors, null);
             sandbox.assert.calledWith(validatorStub, 'apiRequestBodies/createTransfer.json#', 'body');
+            sandbox.assert.calledWith(consoleErrorStub, null);
             sandbox.assert.notCalled(sendRequestStub);
         });
 
