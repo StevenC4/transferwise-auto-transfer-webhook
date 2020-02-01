@@ -17,7 +17,7 @@ module.exports.balanceAccountEvent = (req, res, next) => {
     } else if (req.body.data.resource.profile_id !== config.get('transferWise.profile.id')) {
         error = new Error(`Wrong profile id: ${req.body.data.resource.profile_id}`);
     } else if (req.body.data.resource.id !== config.get('transferWise.account.source.id')) {
-        error = new Error(`Incorrect balance id: ${req.body.data.resource.id}`);
+        error = new Error(`Incorrect source borderless account id: ${req.body.data.resource.id}`);
     } else if (req.body.data.amount > req.body.data.post_transaction_balance_amount) {
         error = new Error(`Amount (${req.body.data.amount}) cannot be greater than post_transaction_balance_amount (${req.body.data.post_transaction_balance_amount})`);
     }
