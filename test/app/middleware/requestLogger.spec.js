@@ -20,7 +20,6 @@ describe('app/middleware/requestLoggerMiddleware.js', () => {
         sandbox.restore();
     });
 
-    // Should this test the actual function? Or should it test the registering of the function? Maybe both?
     it('should log the request when the response object triggers an on finish event', async () => {
         let onFinishFunction;
         const on = (_event, func) => onFinishFunction = func;
