@@ -43,10 +43,14 @@ const getSignature = (rawBody, key = privateKey) => {
 describe('app/server.js', () => {
     describe('failure points', () => {
         describe('authorizationMiddleware.verifyEventSignature', () => {
-            let appErrorLoggerStub, requestInfoLoggerStub;
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
             before(() => {
                 appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
                 requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
             });
 
@@ -63,6 +67,10 @@ describe('app/server.js', () => {
                     .get('/balance-deposit')
                     .set('Accept', 'application/json')
                     .expect(401);
+                sandbox.assert.notCalled(getAccountsStub);
+                sandbox.assert.notCalled(createQuoteStub);
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
                 sandbox.assert.calledOnce(requestInfoLoggerStub);
                 sandbox.assert.calledWith(requestInfoLoggerStub, {
                     hostname: '127.0.0.1',
@@ -101,6 +109,10 @@ describe('app/server.js', () => {
                     .set('Accept', 'application/json')
                     .set('X-Signature', signature)
                     .expect(401);
+                sandbox.assert.notCalled(getAccountsStub);
+                sandbox.assert.notCalled(createQuoteStub);
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
                 sandbox.assert.calledOnce(requestInfoLoggerStub);
                 sandbox.assert.calledWith(requestInfoLoggerStub, {
                     hostname: '127.0.0.1',
@@ -132,10 +144,14 @@ describe('app/server.js', () => {
         });
 
         describe('invalid route handler', () => {
-            let appErrorLoggerStub, requestInfoLoggerStub;
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
             before(() => {
                 appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
                 requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
             });
 
@@ -156,6 +172,10 @@ describe('app/server.js', () => {
                     .set('Content-Type', 'application/json')
                     .set('X-Signature', getSignature(rawBody))
                     .expect(404);
+                sandbox.assert.notCalled(getAccountsStub);
+                sandbox.assert.notCalled(createQuoteStub);
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
                 sandbox.assert.calledOnce(requestInfoLoggerStub);
                 sandbox.assert.calledWith(requestInfoLoggerStub, {
                     hostname: '127.0.0.1',
@@ -181,10 +201,14 @@ describe('app/server.js', () => {
         });
     
         describe('validationMiddleware.balanceAccountEvent', () => {
-            let appErrorLoggerStub, requestInfoLoggerStub;
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
             before(() => {
                 appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
                 requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
             });
 
@@ -205,6 +229,10 @@ describe('app/server.js', () => {
                     .set('Content-Type', 'application/json')
                     .set('X-Signature', getSignature(body))
                     .expect(200);
+                sandbox.assert.notCalled(getAccountsStub);
+                sandbox.assert.notCalled(createQuoteStub);
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
                 sandbox.assert.calledOnce(appErrorLoggerStub);
                 sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
                     assert.strictEqual(error.errorMessage, 'Invalid event format');
@@ -231,6 +259,10 @@ describe('app/server.js', () => {
                     .set('Content-Type', 'application/json')
                     .set('X-Signature', getSignature(body))
                     .expect(200);
+                sandbox.assert.notCalled(getAccountsStub);
+                sandbox.assert.notCalled(createQuoteStub);
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
                 sandbox.assert.calledOnce(appErrorLoggerStub);
                 sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
                     assert.strictEqual(error.errorMessage, 'Wrong profile id: 13715');
@@ -291,10 +323,13 @@ describe('app/server.js', () => {
         });
         
         describe('transferWiseMiddleware.getTargetAccount', () => {
-            let appErrorLoggerStub, getAccountsStub, requestInfoLoggerStub;
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
             before(() => {
                 appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
                 getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
                 requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
             });
@@ -319,6 +354,9 @@ describe('app/server.js', () => {
                     .set('X-Signature', getSignature(body))
                     .expect(200);
                 sandbox.assert.calledOnce(getAccountsStub);
+                sandbox.assert.notCalled(createQuoteStub);
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
                 sandbox.assert.calledOnce(appErrorLoggerStub);
                 sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
                     assert.strictEqual(error.errorMessage, 'Error while calling get accounts');
@@ -352,15 +390,209 @@ describe('app/server.js', () => {
         });
         
         describe('transferWiseMiddleware.createQuote', () => {
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
+            before(() => {
+                appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
+                requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+            });
+
+            afterEach(() => {
+                sandbox.reset();
+            });
+
+            after(() => {
+                sandbox.restore();
+            });
+
+            it('should return an error if the api call throws an error', async () => {
+                const apiError = new Error('Error calling create quote API');
+                const body = JSON.stringify(validBody);
+                getAccountsStub.resolves([
+                    {id: 1234},
+                    {
+                        id: 14141,
+                        currency: 'USD'
+                    },
+                    {id: 3456}
+                ]);
+                createQuoteStub.throws(apiError);
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(getAccountsStub);
+                sandbox.assert.calledOnce(createQuoteStub);
+                sandbox.assert.calledWith(createQuoteStub, {
+                    profile: 15243,
+                    rateType: 'FIXED',
+                    source: 'EUR',
+                    sourceAmount: 1234,
+                    target: 'USD',
+                    type: 'BALANCE_PAYOUT'
+                });
+                sandbox.assert.notCalled(createTransferStub);
+                sandbox.assert.notCalled(fundTransferStub);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Error calling create quote API');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
         });
         
         describe('transferWiseMiddleware.createTransfer', () => {
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
+            before(() => {
+                appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
+                requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+            });
+
+            afterEach(() => {
+                sandbox.reset();
+            });
+
+            after(() => {
+                sandbox.restore();
+            });
+
+            it('should return an error if the api call throws an error', async () => {
+                const apiError = new Error('Error calling create transfer API');
+                const body = JSON.stringify(validBody);
+                getAccountsStub.resolves([
+                    {id: 1234},
+                    {
+                        id: 14141,
+                        currency: 'USD'
+                    },
+                    {id: 3456}
+                ]);
+                createQuoteStub.resolves({id: 'quote id'});
+                createTransferStub.throws(apiError);
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(getAccountsStub);
+                sandbox.assert.calledOnce(createQuoteStub);
+                sandbox.assert.calledWith(createQuoteStub, {
+                    profile: 15243,
+                    rateType: 'FIXED',
+                    source: 'EUR',
+                    sourceAmount: 1234,
+                    target: 'USD',
+                    type: 'BALANCE_PAYOUT'
+                });
+                sandbox.assert.calledOnce(createTransferStub);
+                sandbox.assert.calledWith(createTransferStub, sandbox.match(params => {
+                    assert.notStrictEqual(params.customerTransactionId, undefined);
+                    assert.deepStrictEqual(params.details, {
+                        reference: 'Other',
+                        sourceOfFunds: 'Other',
+                        transferPurpose: 'Other'
+                    });
+                    assert.strictEqual(params.quote, 'quote id');
+                    assert.strictEqual(params.targetAccount, 14141);
+                    return true;
+                }));
+                sandbox.assert.notCalled(fundTransferStub);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Error calling create transfer API');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
         });
         
         describe('transferWiseMiddleware.fundTransfer', () => {
+            let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
 
+            before(() => {
+                appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+                createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+                fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
+                requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+            });
+
+            afterEach(() => {
+                sandbox.reset();
+            });
+
+            after(() => {
+                sandbox.restore();
+            });
+
+            it('should return an error if the api call throws an error', async () => {
+                const apiError = new Error('Error calling fund transfer API');
+                const body = JSON.stringify(validBody);
+                getAccountsStub.resolves([
+                    {id: 1234},
+                    {
+                        id: 14141,
+                        currency: 'USD'
+                    },
+                    {id: 3456}
+                ]);
+                createQuoteStub.resolves({id: 'quote id'});
+                createTransferStub.resolves({id: 'transfer id'});
+                fundTransferStub.throws(apiError);
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(getAccountsStub);
+                sandbox.assert.calledOnce(createQuoteStub);
+                sandbox.assert.calledWith(createQuoteStub, {
+                    profile: 15243,
+                    rateType: 'FIXED',
+                    source: 'EUR',
+                    sourceAmount: 1234,
+                    target: 'USD',
+                    type: 'BALANCE_PAYOUT'
+                });
+                sandbox.assert.calledOnce(createTransferStub);
+                sandbox.assert.calledWith(createTransferStub, sandbox.match(params => {
+                    assert.notStrictEqual(params.customerTransactionId, undefined);
+                    assert.deepStrictEqual(params.details, {
+                        reference: 'Other',
+                        sourceOfFunds: 'Other',
+                        transferPurpose: 'Other'
+                    });
+                    assert.strictEqual(params.quote, 'quote id');
+                    assert.strictEqual(params.targetAccount, 14141);
+                    return true;
+                }));
+                sandbox.assert.calledOnce(fundTransferStub);
+                sandbox.assert.calledWith(fundTransferStub, 15243, 'transfer id');
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Error calling fund transfer API');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
         });
         
         describe('logMiddleware.logBalanceAccountEvent', () => {
