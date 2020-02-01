@@ -14,6 +14,25 @@ const privateKey = Buffer.from(privateKeyBase64, 'base64');
 const privateKeyBadBase64 = 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBMHVwV3JoZ3J4TzM5WmZMU3VLQldWWFVvMHJRQTdaSlNzRVBZSFhTekdSV0c2RmZmCkdZWU8rNUhKMFQ5cHRVc2dJbzA3MG81T0JyUlNNWTBaeG9xWnpIOWh3c2FkYjdaSmdPKzVDUEZ5NDJXOWJuRXIKUG5NZnJzUG90REFDcUEyd3ovY1Z6cEZJbWRKcDRPVmNyVDdkOVU5ZG5nb3Z4S1JKRWtWUzRRWmV0M3ZSVkhBSgpGc1Q5ekhWTVpGenFIenUzQncvdU1qeW1vN2VDSnJqeFdQYThMZnJvSC9YdDZIUy9YVzFpMmYwL0FkRzJQcTZKCmRWZDdmK29xdFF2TWVkbU9RZmJFT0U1RS81aWZOZFVzUElDK0loVC9xdGsxVlQ1bEdyaUxFVFl2VDVJaU0reEgKcUp4VXVFSUVMeCswcDBTa3pLREIyQTZzd2c4UTdzZ3MyZ1dCVXdJREFRQUJBb0lCQVFDZUhxaVZJL0hNVlU4ZgpXd2UyK2gwL08vSTY1RSs5eTNES1RGSjg0cnhTRmQxcDJsYWJYL0Zqa0V4bzNzMTA2TGxTcmVjblZ5QVB6cWZBCkZqUTRzRGZWSTdvNnQ0UFgrQ1RxME0wN2N5ZmFhcSsxV0lvKzZ6ZlpZVzNYaUJhMXZtM0x1MFZSODRFbU1LVEgKd2F2VkJjaUkyOU1uWkNPam5EWmJ5RFQyRmp4eitMWVJWRXhSMHp6aUVtSWlVU0x4RzFYRGYrYmNKcGxTRVJPVQpINnpiUkp6bnVPd2dnTjZ4OFNzeExBMTVwdnhnOEtCS0E0Z3FiSmgyOTN3OUJUYXlwRFo1ZU4yRFZRNVM4dFhWCk16Tk9nb1ZlQlA5ODBQbzJCWXpwaHVtL3NkRXB4czJvZS9YWmRhbGZQbXMrL1Q4S2NwelBQd25yalU4NndYcVoKdUwrNkJZNkJBb0dCQVBseHNVNVhRNC9tUWFHSUdYNlhzbXNtdWN2Y3hWNW0zT2lnd2lBeFczdHdNUThTQ2Z6VwpzTVZWOHRzdlBPRE9wUkJFRFIwNDdPNk5iaHJiTEVOSnR6RWpsNk84SWlZbEN4MWhuaWcrem9JblNXbXdtRlFyCmhGKzBPdXpCWG5NTW5CYmsvMU95TFg5R29aeEhsdlVkSkFBWjYyRVNLeTR1TW9VWm15OTVuNXh4QW9HQkFOaDEKYXRwNnBZTmhYQ1Fpb1E1RmYyR3UxQmI1aThNVGJjRlRMVEF0bEpVbUlrZk00OWFnbUY2a0s5dnhRY09qTEU3NAp0c3VPWjJqRW9nVGRZMHlmV2hGdTZHVjRiYU40WEdaV296bEE5czN6OG1LdEtEcVBDam5YMmFqZGR4RU1WYnRjCjRaVC8reVdlR3FhbTNBV0IwdWhCN3lxU0h5RVVzN0J2WTBFWkYyd0RBb0dBQXhZNEZuc1g5L0RtZ1FRNUpJcm0KQjFOc1d5eDVPTWpYRlAzZ1NSdXpRUnpMVHA5dmhqUjE3WXM1dlNLaGd6cXJhajhkVm00ODZGclJzUDFqVjlYUwpzWVg2TzJsNWxyVkFwUFZ2U3BvMFhnSDBjNTFlMVRQUXFJcUhiQ1NjY1pvSFdIVXUvNjhseHZ4dHhZeFJQdWxFClo4ZnFWTUl2ekp0L3ZvdnBrclhUbHRFQ2dZQUVtcXJGTHVxcVdyM00vdmVTQ0NSbmZZS0JZcGw0Y3NkWTMxNE0Kc2t1QXlLamVBaHV1aXdmeXEyZExiRnhMdndMSVF6NFFJbDFNdXpIL0RINTZPTUYvc1c0OENrMjZ0bXF3dXBNSwpPcm1GTS9VcDZDajg1ZUgvelBtU1AvT3laeUxEczN3UTRVa0VTZEtqVE5WTlFLK3R4UWxEVEl4ZzljSEV0UG5WCmZxVWk1UUtCZ1FDZEZab1ZXNmN5L1NzTTNucTBjUk9CTm84bTk2MVZseUk4ejVVbjhheHBjdnl2M1FhaUEwMDUKN1NBVFJaQis3b1J6bVZsNFlLd20zcHNHcklrTStOVFFLRmZqUUV0cWY4QzBFWjM0KzFnQjRDY21nTVpiZzBJeQp3UHdOYWVBbkpPR2hhOWt3b2JoQXZOY1ZjYWlFc0V3eFNiVkxtUUJyQXc3cTNiQkxabklQTUE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=';
 const privateKeyBad = Buffer.from(privateKeyBadBase64, 'base64');
 
+const validBody = {
+    data: {
+        resource: {
+            id: 24816,
+            type: 'balance-account',
+            profile_id: 15243
+        },
+        amount: 1234,
+        currency: 'EUR',
+        post_transaction_balance_amount: 5555,
+        occurred_at: '2020-02-03T15:31:05.013224Z',
+        transaction_type: 'credit'
+    },
+    subscription_id: '51efc396-51c7-4173-bb71-c5ce5edaf43e',
+    event_type: 'balances#credit',
+    schema_version: '1.2.3',
+    sent_at: '2020-02-03T15:31:05.013224Z'
+};
+
 const getSignature = (rawBody, key = privateKey) => {
     const sign = crypto.createSign('sha1WithRSAEncryption');
     sign.update(rawBody);
@@ -112,39 +131,182 @@ describe('app/server.js', () => {
         });
 
         describe('invalid route handler', () => {
-            it('should return a 404 if an invalid route is called', async () => {
+            let appErrorLoggerStub, requestInfoLoggerStub;
 
+            before(() => {
+                appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+            });
+
+            afterEach(() => {
+                sandbox.reset();
+            });
+
+            after(() => {
+                sandbox.restore();
+            });
+
+            it('should return a 404 if an invalid route is called', async () => {
+                const rawBody = '{"a":1,"b":2.00,"c":"123"}';
+                await request(server)
+                    .post('/invalid-route')
+                    .send(rawBody)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(rawBody))
+                    .expect(404);
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+                sandbox.assert.calledWith(requestInfoLoggerStub, {
+                    hostname: '127.0.0.1',
+                    ip: '::ffff:127.0.0.1',
+                    ips: [],
+                    method: 'POST',
+                    originalUrl: '/invalid-route',
+                    statusCode: 404
+                });
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match((error) => {
+                    assert.strictEqual(error.ip, '::ffff:127.0.0.1');
+                    assert.deepStrictEqual(error.ips, []);
+                    assert.strictEqual(error.method, 'POST');
+                    assert.strictEqual(error.originalUrl, '/invalid-route');
+                    assert.notStrictEqual(error.err, undefined);
+                    assert.strictEqual(error.err.message, 'Invalid route called');
+                    assert.strictEqual(error.errorMessage, 'Invalid route called');
+                    assert.notStrictEqual(error.stackTrace, undefined);
+                    return true;
+                }));
             });
         });
     
-        describe('/balance-deposit', () => {
-            describe('failure points', () => {
-                describe('validationMiddleware.balanceAccountEvent', () => {
-                    it('should route to the failure middleware if AJV validation fails', () => {
-                        
-                    });
-                });
-                
-                describe('transferWiseMiddleware.getTargetAccount', () => {
-    
-                });
-                
-                describe('transferWiseMiddleware.createQuote', () => {
-    
-                });
-                
-                describe('transferWiseMiddleware.createTransfer', () => {
-    
-                });
-                
-                describe('transferWiseMiddleware.fundTransfer', () => {
-    
-                });
-                
-                describe('logMiddleware.logBalanceAccountEvent', () => {
-    
-                });
+        describe('validationMiddleware.balanceAccountEvent', () => {
+            let appErrorLoggerStub, requestInfoLoggerStub;
+
+            before(() => {
+                appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
             });
+
+            afterEach(() => {
+                sandbox.reset();
+            });
+
+            after(() => {
+                sandbox.restore();
+            });
+
+            it('should route to the failure middleware if AJV validation fails', async () => {
+                const body = JSON.stringify({a: 1, b: 2, c: 3});
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Invalid event format');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
+
+            it('should route to the failure middleware if the profile_id in the event does not match the profile id that the user specified', async () => {
+                const body = JSON.stringify({
+                    ...validBody,
+                    data: {
+                        ...validBody.data,
+                        resource: {
+                            ...validBody.data.resource,
+                            profile_id: 13715
+                        }
+                    }
+                });
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Wrong profile id: 13715');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
+
+            it('should route to the failure middleware if the resource id does not match the account id selected by the user', async () => {
+                const body = JSON.stringify({
+                    ...validBody,
+                    data: {
+                        ...validBody.data,
+                        resource: {
+                            ...validBody.data.resource,
+                            id: 34251
+                        }
+                    }
+                });
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Incorrect source borderless account id: 34251');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
+
+            it('should route to the failure middleware if the resource id does not match the account id selected by the user', async () => {
+                const body = JSON.stringify({
+                    ...validBody,
+                    data: {
+                        ...validBody.data,
+                        amount: 1234,
+                        post_transaction_balance_amount: 123
+                    }
+                });
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Amount (1234) cannot be greater than post_transaction_balance_amount (123)');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
+        });
+        
+        describe('transferWiseMiddleware.getTargetAccount', () => {
+
+        });
+        
+        describe('transferWiseMiddleware.createQuote', () => {
+
+        });
+        
+        describe('transferWiseMiddleware.createTransfer', () => {
+
+        });
+        
+        describe('transferWiseMiddleware.fundTransfer', () => {
+
+        });
+        
+        describe('logMiddleware.logBalanceAccountEvent', () => {
+
         });
     });
 });
