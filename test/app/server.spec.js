@@ -3,6 +3,7 @@ const config = require('../../config');
 const crypto = require('crypto');
 const sandbox = require('sinon').createSandbox();
 const server = require('../../app/server');
+const transferWise = require('../../app/lib/transferWise');
 const request = require('supertest');
 
 const appLogger = require('../../app/lib/loggers/app');
@@ -290,7 +291,64 @@ describe('app/server.js', () => {
         });
         
         describe('transferWiseMiddleware.getTargetAccount', () => {
+            let appErrorLoggerStub, getAccountsStub, requestInfoLoggerStub;
 
+            before(() => {
+                appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+                getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
+                requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+            });
+
+            afterEach(() => {
+                sandbox.reset();
+            });
+
+            after(() => {
+                sandbox.restore();
+            });
+
+            it('should return an error if the api call throws an error', async () => {
+                const body = JSON.stringify(validBody);
+                const apiError = new Error('Error while calling get accounts');
+                getAccountsStub.throws(apiError);
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(getAccountsStub);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Error while calling get accounts');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
+
+            it('should return an error if the list of accounts from the api call does not include the target account specified by the user', async () => {
+                const body = JSON.stringify(validBody);
+                getAccountsStub.resolves([
+                    {id: 1234},
+                    {id: 2345},
+                    {id: 3456}
+                ]);
+                await request(server)
+                    .post('/balance-deposit')
+                    .send(body)
+                    .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
+                    .set('X-Signature', getSignature(body))
+                    .expect(200);
+                sandbox.assert.calledOnce(getAccountsStub);
+                sandbox.assert.calledOnce(appErrorLoggerStub);
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
+                    assert.strictEqual(error.errorMessage, 'Chosen target account not found');
+                    return true;
+                }));
+                sandbox.assert.calledOnce(requestInfoLoggerStub);
+            });
         });
         
         describe('transferWiseMiddleware.createQuote', () => {
