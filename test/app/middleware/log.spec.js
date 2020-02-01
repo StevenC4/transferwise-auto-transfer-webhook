@@ -41,7 +41,7 @@ describe('app/middleware/log.js', () => {
             const error = await logBalanceAccountEvent(req, {}).catch(err => err);
             assert.strictEqual(error, undefined);
             sandbox.assert.notCalled(loggerInfoStub);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
 		});
 
         it('should log the output when the config is set to do so', async () => {
@@ -56,7 +56,7 @@ describe('app/middleware/log.js', () => {
 					transferStatus: 'transferwise transfer status'
 				}
 			});
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
     });
 });

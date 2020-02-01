@@ -6,7 +6,7 @@ const {promisify} = require('util');
 const proxyquire = require('proxyquire');
 const sandbox = require('sinon').createSandbox();
 const transferWise = require('../../../app/lib/transferWise');
-let transferWiseMiddleware
+let transferWiseMiddleware;
 
 describe('app/middleware/transferWise.js', () => {
     const uuid = 'sample-uuid-value-12354';
@@ -44,7 +44,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledOnce(getAccountStub);
-            assert.deepEqual(req, {});
+            assert.deepStrictEqual(req, {});
         });
 
         it('should return an error when an error is thrown errors during the TransferWise API call', async () => {
@@ -56,7 +56,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledOnce(getAccountStub);
-            assert.deepEqual(req, {});
+            assert.deepStrictEqual(req, {});
         });
 
         it('should return an error when the TransferWise API call succeeds but the chosen target account Id is not found among the results', async () => {
@@ -73,7 +73,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error.message, 'Chosen target account not found');
             sandbox.assert.calledOnce(getAccountStub);
-            assert.deepEqual(req, {targetAccount: undefined});
+            assert.deepStrictEqual(req, {targetAccount: undefined});
         });
 
         it('should succeed when the chosen target account is found amon the API call results', async () => {
@@ -90,7 +90,7 @@ describe('app/middleware/transferWise.js', () => {
             const error = await getTargetAccount(req, {}).catch(err => err);
             assert.strictEqual(error, undefined);
             sandbox.assert.calledOnce(getAccountStub);
-            assert.deepEqual(req, {targetAccount: {id: 14141}});
+            assert.deepStrictEqual(req, {targetAccount: {id: 14141}});
         });
     });
 
@@ -149,7 +149,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should return an error when the TransferWise API call throws an expection', async () => {
@@ -160,7 +160,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should succeed and not log the output', async () => {
@@ -172,7 +172,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
             sandbox.assert.notCalled(logStub);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should succeed and log the output', async () => {
@@ -185,7 +185,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(createQuoteStub, createQuoteParams);
             sandbox.assert.calledWith(logStub, {quote});
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
     });
 
@@ -241,7 +241,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledWith(createTransferStub, createTransferParams);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should return an error when the TransferWise API call throws an expection', async () => {
@@ -252,7 +252,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledWith(createTransferStub, createTransferParams);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should succeed and not log the output', async () => {
@@ -264,7 +264,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(createTransferStub, createTransferParams);
             sandbox.assert.notCalled(logStub);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should succeed and log the output', async () => {
@@ -277,7 +277,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(createTransferStub, createTransferParams);
             sandbox.assert.calledWith(logStub, {transfer});
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
     });
 
@@ -325,7 +325,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should return an error when the TransferWise API call throws an expection', async () => {
@@ -336,7 +336,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.notStrictEqual(error, undefined);
             assert.strictEqual(error, apiError);
             sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should succeed and not log the output', async () => {
@@ -348,7 +348,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
             sandbox.assert.notCalled(logStub);
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
 
         it('should succeed and log the output', async () => {
@@ -361,7 +361,7 @@ describe('app/middleware/transferWise.js', () => {
             assert.strictEqual(error, undefined);
             sandbox.assert.calledWith(fundTransferStub, profileId, transferId);
             sandbox.assert.calledWith(logStub, {transferStatus});
-            assert.deepEqual(req, expectedReq);
+            assert.deepStrictEqual(req, expectedReq);
         });
     });
 });

@@ -8,6 +8,10 @@
 				"id": 14141
 			}
 		},
+		"api": {
+			"baseUrl": "http://transferwise-base-url.test/",
+			"key": "test API key"
+		},
 		"profile": {
 			"id": 15243
 		},

@@ -5,8 +5,7 @@ module.exports._sendRequest = async (method, path, body) => {
     const options = {
         method,
         headers: {
-            Authorization: `Bearer ${config.get('transferWise.api.key')}`,
-            'Content-Type': 'application/json'
+            Authorization: `Bearer ${config.get('transferWise.api.key')}`
         }
     }
     if (body) {
