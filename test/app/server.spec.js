@@ -599,4 +599,73 @@ describe('app/server.js', () => {
 
         });
     });
+
+    describe('success', () => {
+        let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
+
+        before(() => {
+            appErrorLoggerStub = sandbox.stub(appLogger, 'error');
+            createQuoteStub = sandbox.stub(transferWise.quote, 'create');
+            createTransferStub = sandbox.stub(transferWise.transfer, 'create');
+            fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
+            getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
+            requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+        });
+
+        afterEach(() => {
+            sandbox.reset();
+        });
+
+        after(() => {
+            sandbox.restore();
+        });
+
+        it('should return an error if the api call throws an error', async () => {
+            const body = JSON.stringify(validBody);
+            getAccountsStub.resolves([
+                {id: 1234},
+                {
+                    id: 14141,
+                    currency: 'USD'
+                },
+                {id: 3456}
+            ]);
+            createQuoteStub.resolves({id: 'quote id'});
+            createTransferStub.resolves({id: 'transfer id'});
+            fundTransferStub.resolves({transferStatus: 'transfer status'});
+            await request(server)
+                .post('/balance-deposit')
+                .send(body)
+                .set('Accept', 'application/json')
+                .set('Content-Type', 'application/json')
+                .set('X-Signature', getSignature(body))
+                .expect(200);
+            sandbox.assert.calledOnce(getAccountsStub);
+            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(createQuoteStub, {
+                profile: 15243,
+                rateType: 'FIXED',
+                source: 'EUR',
+                sourceAmount: 1234,
+                target: 'USD',
+                type: 'BALANCE_PAYOUT'
+            });
+            sandbox.assert.calledOnce(createTransferStub);
+            sandbox.assert.calledWith(createTransferStub, sandbox.match(params => {
+                assert.notStrictEqual(params.customerTransactionId, undefined);
+                assert.deepStrictEqual(params.details, {
+                    reference: 'Other',
+                    sourceOfFunds: 'Other',
+                    transferPurpose: 'Other'
+                });
+                assert.strictEqual(params.quote, 'quote id');
+                assert.strictEqual(params.targetAccount, 14141);
+                return true;
+            }));
+            sandbox.assert.calledOnce(fundTransferStub);
+            sandbox.assert.calledWith(fundTransferStub, 15243, 'transfer id');
+            sandbox.assert.notCalled(appErrorLoggerStub);
+            sandbox.assert.calledOnce(requestInfoLoggerStub);
+        });
+    });
 });
