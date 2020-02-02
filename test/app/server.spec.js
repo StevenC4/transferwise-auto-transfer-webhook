@@ -65,8 +65,9 @@ describe('app/server.js', () => {
 
             it('should fail if there is no X-Signature header', async () => {
                 await request(server)
-                    .get('/balance-deposit')
+                    .post('/balance-deposit')
                     .set('Accept', 'application/json')
+                    .set('Content-Type', 'application/json')
                     .expect(401);
                 sandbox.assert.notCalled(getAccountsStub);
                 sandbox.assert.notCalled(createQuoteStub);
@@ -77,7 +78,7 @@ describe('app/server.js', () => {
                     hostname: '127.0.0.1',
                     ip: '::ffff:127.0.0.1',
                     ips: [],
-                    method: 'GET',
+                    method: 'POST',
                     originalUrl: '/balance-deposit',
                     statusCode: 401
                 });
@@ -85,7 +86,7 @@ describe('app/server.js', () => {
                 sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match((error) => {
                     assert.strictEqual(error.ip, '::ffff:127.0.0.1');
                     assert.deepStrictEqual(error.ips, []);
-                    assert.strictEqual(error.method, 'GET');
+                    assert.strictEqual(error.method, 'POST');
                     assert.strictEqual(error.originalUrl, '/balance-deposit');
                     assert.notStrictEqual(error.err, undefined);
                     assert.strictEqual(error.err.message, 'No X-Signature header present');
