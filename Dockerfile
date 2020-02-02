@@ -1,4 +1,4 @@
-FROM node:12.13.1-alpine3.10 AS node-modules
+FROM node:13.7.0-alpine3.10 AS node-modules
 
 COPY package.json package-lock.json ./
 RUN npm ci --only=production

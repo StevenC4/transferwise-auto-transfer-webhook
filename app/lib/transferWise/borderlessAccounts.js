@@ -1,3 +1,3 @@
-const {_sendRequest} = require('./');
+const transferWise = require('./');
 
-module.exports.get = async profileId => await _sendRequest('GET', `/v1/borderless-accounts?profileId=${profileId}`);
+module.exports.get = async profileId => await transferWise._sendRequest('GET', `/v1/borderless-accounts?profileId=${profileId}`);

@@ -5,63 +5,63 @@ const transferWise = require('../lib/transferWise');
 const uuidv4 = require('uuid/v4');
 
 module.exports.getTargetAccount = asyncHandler(async (req, _res, next) => {
-    let error;
+	let error;
 
-    const accounts = await transferWise.accounts.get();
-    req.targetAccount = accounts.find(account => account.id === config.get('transferWise.account.target.id'));
+	const accounts = await transferWise.accounts.get();
+	req.targetAccount = accounts.find(account => account.id === config.get('transferWise.account.target.id'));
 
-    if (!req.targetAccount) {
-        error = new Error('Chosen target account not found');
-    }
+	if (!req.targetAccount) {
+		error = new Error('Chosen target account not found');
+	}
 
-    next(error);
+	next(error);
 });
 
 // https://api-docs.transferwise.com/#quotes-create
 module.exports.createQuote = asyncHandler(async (req, _res, next) => {
-    req.quote = await transferWise.quote.create({
-        profile: config.get('transferWise.profile.id'),
-        source: req.body.data.currency,
-        target: req.targetAccount.currency,
-        rateType: 'FIXED',
-        sourceAmount: req.body.data.amount,
-        type: 'BALANCE_PAYOUT'
-    });
+	req.quote = await transferWise.quote.create({
+		profile: config.get('transferWise.profile.id'),
+		source: req.body.data.currency,
+		target: req.targetAccount.currency,
+		rateType: 'FIXED',
+		sourceAmount: req.body.data.amount,
+		type: 'BALANCE_PAYOUT'
+	});
 
-    if (config.get('logs.transferWise.log')) {
-        logger.info({quote: req.quote});
-    }
+	if (config.get('logs.transferWise.log')) {
+		logger.info({quote: req.quote});
+	}
 
-    next();
+	next();
 });
 
 // https://api-docs.transferwise.com/#transfers-create
 module.exports.createTransfer = asyncHandler(async (req, _res, next) => {
-    req.transfer = await transferWise.transfer.create({
-        targetAccount: config.get('transferWise.account.target.id'),
-        quote: req.quote.id,
-        customerTransactionId: uuidv4(),
-        details: {
-            reference: 'Other',
-            transferPurpose: 'Other',
-            sourceOfFunds: 'Other'
-        }
-    });
+	req.transfer = await transferWise.transfer.create({
+		targetAccount: config.get('transferWise.account.target.id'),
+		quote: req.quote.id,
+		customerTransactionId: uuidv4(),
+		details: {
+			reference: 'Other',
+			transferPurpose: 'Other',
+			sourceOfFunds: 'Other'
+		}
+	});
 
-    if (config.get('logs.transferWise.log')) {
-        logger.info({transfer: req.transfer});
-    }
+	if (config.get('logs.transferWise.log')) {
+		logger.info({transfer: req.transfer});
+	}
 
-    next();
+	next();
 });
 
 // https://api-docs.transferwise.com/#transfers-fund
 module.exports.fundTransfer = asyncHandler(async (req, _res, next) => {
-    req.transferStatus = await transferWise.transfer.fund(config.get('transferWise.profile.id'), req.transfer.id);
+	req.transferStatus = await transferWise.transfer.fund(config.get('transferWise.profile.id'), req.transfer.id);
 
-    if (config.get('logs.transferWise.log')) {
-        logger.info({transferStatus: req.transferStatus});
-    }
+	if (config.get('logs.transferWise.log')) {
+		logger.info({transferStatus: req.transferStatus});
+	}
 
-    next();
+	next();
 });

@@ -27,7 +27,7 @@ const config = convict({
 	},
 	env: {
 		doc: 'The environment to run this project in',
-		format: ['production', 'development'],
+		format: ['production', 'staging', 'development', 'test'],
 		default: 'production',
 		env: 'APP_ENV'
 	},
@@ -40,14 +40,14 @@ const config = convict({
 	},
 	logs: {
 		combined: {
-			filename:  {
+			filename: {
 				doc: 'The filename (including path) of the combined logs',
 				format: String,
 				default: '/var/log/transferwise-webhook/combined.log'
 			}
 		},
 		error: {
-			filename:  {
+			filename: {
 				doc: 'The filename (including path) of the error logs',
 				format: String,
 				default: '/var/log/transferwise-webhook/error.log'
@@ -103,7 +103,7 @@ const config = convict({
 					default: 0,
 					env: 'TRANSFERWISE_TARGET_ACCOUNT_ID'
 				}
-			},
+			}
 		},
 		api: {
 			baseUrl: {
@@ -123,7 +123,7 @@ const config = convict({
 				id: {
 					doc: 'The identifier of the source balance',
 					format: 'integer',
-					default: '',
+					default: 0,
 					env: 'TRANSFERWISE_SOURCE_BALANCE_ID'
 				}
 			}
@@ -161,6 +161,7 @@ const config = convict({
 
 const env = config.get('env');
 const envFilePath = path.resolve(__dirname, `${env}.json`);
+// eslint-disable-next-line no-sync
 if (fs.existsSync(envFilePath)) {
 	config.loadFile(envFilePath);
 }

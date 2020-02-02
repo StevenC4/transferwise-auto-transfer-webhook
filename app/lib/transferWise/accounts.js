@@ -1,4 +1,4 @@
 const config = require('../../../config');
-const {_sendRequest} = require('./');
+const transferWise = require('./');
 
-module.exports.get = async () => await _sendRequest('GET', `/v1/accounts?profile=${config.get('transferWise.profile.id')}`);
+module.exports.get = async () => await transferWise._sendRequest('GET', `/v1/accounts?profile=${config.get('transferWise.profile.id')}`);
