@@ -1,0 +1,18 @@
+{
+    "all": true,
+    "exclude": [
+        "**/app/index.js",
+        "**/app/lib/loggers/**",
+        "**/node_modules/**",
+        "**/test/**",
+        "**/coverage/**",
+        "**/config/**",
+        "**/scripts/**"
+    ],
+    "include": "app/**/*.js",
+    "reporter": [
+        "html",
+        "text",
+        "lcov"
+    ]
+}

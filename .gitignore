@@ -7,4 +7,4 @@ node_modules
 
 # Test files
 .nyc_output
-coverage 
+coverage

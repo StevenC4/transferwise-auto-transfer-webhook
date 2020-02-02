@@ -3,13 +3,17 @@
         "browser": false,
         "commonjs": false,
         "es6": true,
-        "node": true
+        "node": true,
+        "mocha": true
     },
     "extends": "eslint:recommended",
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
+    "ignorePatterns": [
+        "node_modules/"
+    ],
     "parserOptions": {
         "ecmaVersion": 2020
     },
@@ -40,7 +44,10 @@
             }
         ],
         "block-scoped-var": "error",
-        "block-spacing": "error",
+        "block-spacing": [
+            "error",
+            "never"
+        ],
         "brace-style": [
             "error",
             "1tbs"
@@ -71,7 +78,10 @@
         "curly": "error",
         "default-case": "error",
         "default-param-last": "error",
-        "dot-location": "error",
+        "dot-location": [
+            "error",
+            "property"
+        ],
         "dot-notation": "error",
         "eol-last": "off",
         "eqeqeq": "error",
@@ -102,7 +112,10 @@
             "error",
             "beside"
         ],
-        "indent": "off",
+        "indent": [
+            "error",
+            "tab"
+        ],
         "indent-legacy": "off",
         "init-declarations": "off",
         "jsx-quotes": "error",
@@ -134,7 +147,6 @@
         "multiline-comment-style": "error",
         "new-parens": "error",
         "newline-after-var": "off",
-        "newline-before-return": "error",
         "newline-per-chained-call": "error",
         "no-alert": "error",
         "no-array-constructor": "error",
@@ -163,6 +175,7 @@
         "no-implicit-globals": "error",
         "no-implied-eval": "error",
         "no-import-assign": "error",
+        "no-irregular-whitespace": "error",
         "no-inline-comments": "off",
         "no-invalid-this": "error",
         "no-iterator": "error",
@@ -174,6 +187,7 @@
         "no-magic-numbers": "off",
         "no-mixed-operators": "error",
         "no-mixed-requires": "error",
+        "no-mixed-spaces-and-tabs": "error",
         "no-multi-assign": "error",
         "no-multi-spaces": "error",
         "no-multi-str": "error",
@@ -218,11 +232,16 @@
         "no-ternary": "off",
         "no-throw-literal": "error",
         "no-undef-init": "error",
-        "no-undefined": "error",
         "no-underscore-dangle": "off",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
         "no-unused-expressions": "error",
+        "no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_"
+            }
+        ],
         "no-use-before-define": "off",
         "no-useless-call": "error",
         "no-useless-computed-key": "error",

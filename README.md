@@ -49,9 +49,9 @@ If you will be running this project via the included docker-compose file, you mu
 The following environment variables can be set to configure the service:
 
 #### `APP_ENV`
-Possible values: `development` or `production`
+Possible values: `development`, `staging`, `test` or `production`
 
-If set to `development`:
+If set to `staging`:
 * The loggers will log to the console in addition to the log files
 * The service will make API calls against the TransferWise sandbox API
 * The service will use the TransferWise sandbox public key for public key verification
