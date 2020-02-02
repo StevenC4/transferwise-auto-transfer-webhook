@@ -1,5 +1,7 @@
 {
     "all": true,
+    "branches": 95,
+    "check-coverage": true,
     "exclude": [
         "**/app/index.js",
         "**/app/lib/loggers/**",
@@ -9,10 +11,13 @@
         "**/config/**",
         "**/scripts/**"
     ],
+    "functions": 95,
     "include": "app/**/*.js",
+    "lines": 95,
     "reporter": [
         "html",
         "text",
         "lcov"
-    ]
+    ],
+    "statements": 95
 }
