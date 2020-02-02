@@ -29,7 +29,7 @@ const validBody = {
 		},
 		amount: 1234,
 		currency: 'EUR',
-		post_transaction_balance_amount: 5555,
+		post_transaction_balance_amount: 5554,
 		occurred_at: '2020-02-03T15:31:05.013224Z',
 		transaction_type: 'credit'
 	},
