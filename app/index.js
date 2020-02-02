@@ -8,13 +8,6 @@ const port = config.get('port');
  */
 console.log(`Starting ${config.get('appName')} on port ${port} in ${config.get('env')} environment`);
 
-const httpServers = [server].map(server => {
-	const httpServer = http.createServer(server);
-	httpServer.listen(port);
-
-	return httpServer;
-});
-
 const httpServer = http.createServer(server);
 
 const gracefulShutdown = async () => {

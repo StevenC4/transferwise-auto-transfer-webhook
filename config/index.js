@@ -74,17 +74,10 @@ const config = convict({
 			}
 		}
 	},
-	ports: {
-		webhook: {
-			doc: 'The port on which the webhook will listen',
-			format: 'port',
-			default: 8121
-		},
-		configUI: {
-			doc: 'The port on which the server of the configuration UI',
-			format: 'port',
-			default: 8121
-		}
+	port: {
+		doc: 'The port on which the webhook will listen',
+		format: 'port',
+		default: 8121
 	},
 	transferWise: {
 		account: {
