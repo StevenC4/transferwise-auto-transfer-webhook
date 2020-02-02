@@ -24,7 +24,7 @@ describe('app/lib/transferWise/accounts', () => {
 			sendRequestStub.resolves(response);
 			const accountsResponse = await accounts.get().catch(err => err);
 			assert.strictEqual(accountsResponse, response);
-			sandbox.assert.calledWith(sendRequestStub, 'GET', '/v1/accounts');
+			sandbox.assert.calledWith(sendRequestStub, 'GET', '/v1/accounts?profile=15243');
 		});
 	});
 });
