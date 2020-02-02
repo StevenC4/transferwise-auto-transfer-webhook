@@ -22,14 +22,16 @@ describe('app/middleware/requestLoggerMiddleware.js', () => {
 
     it('should log the request when the response object triggers an on finish event', async () => {
         let onFinishFunction;
-        const on = (_event, func) => onFinishFunction = func;
+        const on = (_event, func) => {
+            onFinishFunction = func;
+        };
         const onSpy = sandbox.spy(on);
         const req = {
             hostname: 'hostname',
             ip: '8.8.8.8',
             ips: ['8.8.8.8'],
             method: 'GET',
-            originalUrl: 'original url',
+            originalUrl: 'original url'
         };
         const res = {
             on: onSpy,

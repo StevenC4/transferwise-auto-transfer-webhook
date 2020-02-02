@@ -40,14 +40,14 @@ const config = convict({
 	},
 	logs: {
 		combined: {
-			filename:  {
+			filename: {
 				doc: 'The filename (including path) of the combined logs',
 				format: String,
 				default: '/var/log/transferwise-webhook/combined.log'
 			}
 		},
 		error: {
-			filename:  {
+			filename: {
 				doc: 'The filename (including path) of the error logs',
 				format: String,
 				default: '/var/log/transferwise-webhook/error.log'

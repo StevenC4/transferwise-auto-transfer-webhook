@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 const assert = require('assert');
 const config = require('../../../config');
 const logger = require('../../../app/lib/loggers/transferWise');
@@ -8,7 +9,7 @@ const validator = require('../../../app/lib/validator');
 
 describe('app/middleware/validation.js', () => {
     describe('balanceAccountEvent', () => {
-        let balanceAccountEvent = promisify(validationMiddleware.balanceAccountEvent);
+        const balanceAccountEvent = promisify(validationMiddleware.balanceAccountEvent);
         let loggerStub, validatorStub;
         let shouldLog;
 
@@ -49,7 +50,7 @@ describe('app/middleware/validation.js', () => {
                 body: {
                     data: {
                         resource: {
-                            profile_id: 34251
+                            profile_id: 34251 /* eslint-disable-line camelcase */
                         }
                     }
                 }
@@ -71,7 +72,7 @@ describe('app/middleware/validation.js', () => {
                     data: {
                         resource: {
                             id: 13715,
-                            profile_id: 15243
+                            profile_id: 15243 /* eslint-disable-line camelcase */
                         }
                     }
                 }
@@ -91,10 +92,10 @@ describe('app/middleware/validation.js', () => {
                 body: {
                     data: {
                         amount: 50,
-                        post_transaction_balance_amount: 49,
+                        post_transaction_balance_amount: 49, /* eslint-disable-line camelcase */
                         resource: {
                             id: 24816,
-                            profile_id: 15243
+                            profile_id: 15243 /* eslint-disable-line camelcase */
                         }
                     }
                 }
@@ -114,10 +115,10 @@ describe('app/middleware/validation.js', () => {
                 body: {
                     data: {
                         amount: 50,
-                        post_transaction_balance_amount: 50,
+                        post_transaction_balance_amount: 50, /* eslint-disable-line camelcase */
                         resource: {
                             id: 24816,
-                            profile_id: 15243
+                            profile_id: 15243 /* eslint-disable-line camelcase */
                         }
                     }
                 }
@@ -136,10 +137,10 @@ describe('app/middleware/validation.js', () => {
                 body: {
                     data: {
                         amount: 50,
-                        post_transaction_balance_amount: 51,
+                        post_transaction_balance_amount: 51, /* eslint-disable-line camelcase */
                         resource: {
                             id: 24816,
-                            profile_id: 15243
+                            profile_id: 15243 /* eslint-disable-line camelcase */
                         }
                     }
                 }

@@ -4,6 +4,7 @@ const sandbox = require('sinon').createSandbox();
 const transferWise = require('../../../../app/lib/transferWise');
 const validator = require('../../../../app/lib/validator');
 
+/* eslint-disable max-lines-per-function */
 describe('app/lib/transferWise/transfer', () => {
     describe('create', () => {
         let consoleErrorStub, sendRequestStub, validatorStub;
@@ -24,7 +25,7 @@ describe('app/lib/transferWise/transfer', () => {
 
         it('should not call _sendRequest if validation fails', async () => {
             validatorStub.returns(false);
-            let transferResponse, error;
+            let error, transferResponse;
             try {
                 transferResponse = await transfer.create('body');
             } catch (err) {
@@ -42,7 +43,7 @@ describe('app/lib/transferWise/transfer', () => {
         it('should call _sendRequest if validation passes', async () => {
             validatorStub.returns(true);
             sendRequestStub.resolves('response');
-            let transferResponse, error;
+            let error, transferResponse;
             try {
                 transferResponse = await transfer.create('body');
             } catch (err) {
@@ -72,7 +73,7 @@ describe('app/lib/transferWise/transfer', () => {
 
         it('should call _sendRequest', async () => {
             sendRequestStub.resolves('response');
-            let transferResponse, error;
+            let error, transferResponse;
             try {
                 transferResponse = await transfer.fund('profile_id', 'transfer_id');
             } catch (err) {

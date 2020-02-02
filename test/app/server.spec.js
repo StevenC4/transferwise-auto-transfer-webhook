@@ -1,3 +1,7 @@
+/* eslint-disable max-lines */
+/* eslint-disable max-lines-per-function */
+/* eslint-disable camelcase */
+/* eslint-disable id-length */
 const assert = require('assert');
 const config = require('../../config');
 const crypto = require('crypto');
@@ -83,7 +87,7 @@ describe('app/server.js', () => {
                     statusCode: 401
                 });
                 sandbox.assert.calledOnce(appErrorLoggerStub);
-                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match((error) => {
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
                     assert.strictEqual(error.ip, '::ffff:127.0.0.1');
                     assert.deepStrictEqual(error.ips, []);
                     assert.strictEqual(error.method, 'POST');
@@ -131,7 +135,7 @@ describe('app/server.js', () => {
                     signature,
                     publicKey: Buffer.from(config.get('transferWise.publicKey'), 'base64').toString()
                 });
-                sandbox.assert.calledWith(appErrorLoggerStub.secondCall, 'An error occurred', sandbox.match((error) => {
+                sandbox.assert.calledWith(appErrorLoggerStub.secondCall, 'An error occurred', sandbox.match(error => {
                     assert.strictEqual(error.ip, '::ffff:127.0.0.1');
                     assert.deepStrictEqual(error.ips, []);
                     assert.strictEqual(error.method, 'POST');
@@ -188,7 +192,7 @@ describe('app/server.js', () => {
                     statusCode: 404
                 });
                 sandbox.assert.calledOnce(appErrorLoggerStub);
-                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match((error) => {
+                sandbox.assert.calledWith(appErrorLoggerStub, 'An error occurred', sandbox.match(error => {
                     assert.strictEqual(error.ip, '::ffff:127.0.0.1');
                     assert.deepStrictEqual(error.ips, []);
                     assert.strictEqual(error.method, 'POST');

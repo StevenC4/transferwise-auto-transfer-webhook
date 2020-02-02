@@ -1,8 +1,9 @@
 const assert = require('assert');
-const sandbox = require('sinon').createSandbox();
 const proxyquire = require('proxyquire');
+const sandbox = require('sinon').createSandbox();
 let transferWise;
 
+/* eslint-disable max-lines-per-function */
 describe('app/lib/transferWise/index.js', () => {
     describe('_sendRequest', () => {
         let fetchStub;
@@ -27,12 +28,12 @@ describe('app/lib/transferWise/index.js', () => {
             fetchStub.rejects(fetchError);
             const method = 'GET';
             const path = 'test-path';
-            const body = {
-                a: 1,
+            const body = { /* eslint-disable id-length */
+                a: 1,   
                 b: 2,
                 c: 3
             };
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path, body);
             } catch (err) {
@@ -55,12 +56,12 @@ describe('app/lib/transferWise/index.js', () => {
             fetchStub.throws(fetchError);
             const method = 'GET';
             const path = 'test-path';
-            const body = {
+            const body = { /* eslint-disable id-length */
                 a: 1,
                 b: 2,
                 c: 3
             };
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path, body);
             } catch (err) {
@@ -86,12 +87,12 @@ describe('app/lib/transferWise/index.js', () => {
             });
             const method = 'GET';
             const path = 'test-path';
-            const body = {
+            const body = { /* eslint-disable id-length */
                 a: 1,
                 b: 2,
                 c: 3
             };
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path, body);
             } catch (err) {
@@ -118,12 +119,12 @@ describe('app/lib/transferWise/index.js', () => {
             });
             const method = 'GET';
             const path = 'test-path';
-            const body = {
+            const body = { /* eslint-disable id-length */
                 a: 1,
                 b: 2,
                 c: 3
             };
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path, body);
             } catch (err) {
@@ -150,12 +151,12 @@ describe('app/lib/transferWise/index.js', () => {
             });
             const method = 'GET';
             const path = 'test-path';
-            const body = {
+            const body = { /* eslint-disable id-length */
                 a: 1,
                 b: 2,
                 c: 3
             };
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path, body);
             } catch (err) {
@@ -189,7 +190,7 @@ describe('app/lib/transferWise/index.js', () => {
                 b: 2,
                 c: 3
             };
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path, body);
             } catch (err) {
@@ -216,7 +217,7 @@ describe('app/lib/transferWise/index.js', () => {
             });
             const method = 'GET';
             const path = 'test-path';
-            let response, error;
+            let error, response;
             try {
                 response = await transferWise._sendRequest(method, path);
             } catch (err) {

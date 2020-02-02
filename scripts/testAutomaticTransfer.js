@@ -5,6 +5,7 @@ const config = require('../config');
 const transferWise = require('../app/lib/transferWise');
 const uuidv4 = require('uuid/v4');
 
+/* eslint-disable-next-line max-lines-per-function */
 (async () => {
     const borderlessAccounts = await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id'));
     const chosenBalance = borderlessAccounts.reduce((accumulator, borderlessAccount) => {
@@ -69,7 +70,7 @@ const uuidv4 = require('uuid/v4');
     } catch (error) {
         console.error('Error:', error.message);
         console.error(error);
-        return
+        return;
     }
     
     // 4. Fund the transfer
@@ -80,6 +81,5 @@ const uuidv4 = require('uuid/v4');
     } catch (error) {
         console.error('Error:', error.message);
         console.error(error);
-        return
     }
 })();
