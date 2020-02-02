@@ -13,70 +13,70 @@ const privateKeyBadBase64 = 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEF
 const privateKeyBad = Buffer.from(privateKeyBadBase64, 'base64');
 
 describe('app/middleware/authorization.js', () => {
-    describe('verifyEventSignature', () => {
-        const verifyEventSignature = promisify(authorizationMiddleware.verifyEventSignature);
-        let loggerErrorStub;
+	describe('verifyEventSignature', () => {
+		const verifyEventSignature = promisify(authorizationMiddleware.verifyEventSignature);
+		let loggerErrorStub;
 
-        before(() => {
-            loggerErrorStub = sandbox.stub(logger, 'error');
-        });
+		before(() => {
+			loggerErrorStub = sandbox.stub(logger, 'error');
+		});
 
-        afterEach(() => {
-            sandbox.resetHistory();
-        });
+		afterEach(() => {
+			sandbox.resetHistory();
+		});
 
-        after(() => {
-            sandbox.restore();
-        });
+		after(() => {
+			sandbox.restore();
+		});
 
-        it('should fail if there is no X-Signature header present on the request', async () => {
-            const cryptoCreateVerifyStub = sandbox.stub(crypto, 'createVerify');
-            const req = {header: _headerName => undefined};
-            const error = await verifyEventSignature(req, {}).catch(err => err);
-            assert.notStrictEqual(error, undefined);
-            assert.strictEqual(error.message, 'No X-Signature header present');
-            sandbox.assert.notCalled(cryptoCreateVerifyStub);
-            sandbox.assert.notCalled(loggerErrorStub);
-            cryptoCreateVerifyStub.restore();
-        });
+		it('should fail if there is no X-Signature header present on the request', async () => {
+			const cryptoCreateVerifyStub = sandbox.stub(crypto, 'createVerify');
+			const req = {header: _headerName => undefined};
+			const error = await verifyEventSignature(req, {}).catch(err => err);
+			assert.notStrictEqual(error, undefined);
+			assert.strictEqual(error.message, 'No X-Signature header present');
+			sandbox.assert.notCalled(cryptoCreateVerifyStub);
+			sandbox.assert.notCalled(loggerErrorStub);
+			cryptoCreateVerifyStub.restore();
+		});
 
-        it('should fail if the public key verification fails', async () => {
-            const cryptoCreateVerifyStub = sandbox.spy(crypto, 'createVerify');
+		it('should fail if the public key verification fails', async () => {
+			const cryptoCreateVerifyStub = sandbox.spy(crypto, 'createVerify');
 
-            const body = {test: 'test', value: 14, here: 'there'};
-            const rawBody = JSON.stringify(body);
+			const body = {test: 'test', value: 14, here: 'there'};
+			const rawBody = JSON.stringify(body);
 
-            const sign = crypto.createSign('sha1WithRSAEncryption');
-            sign.update(rawBody);
-            const signature = sign.sign(privateKeyBad, 'base64');
+			const sign = crypto.createSign('sha1WithRSAEncryption');
+			sign.update(rawBody);
+			const signature = sign.sign(privateKeyBad, 'base64');
 
-            // eslint-disable-next-line no-extra-parens
-            const req = {header: headerName => (headerName === 'X-Signature' ? signature : undefined), body, rawBody};
-            const error = await verifyEventSignature(req, {}).catch(err => err);
-            assert.notStrictEqual(error, undefined);
-            assert.strictEqual(error.message, 'Failed public key verification');
-            sandbox.assert.calledOnce(cryptoCreateVerifyStub);
-            sandbox.assert.calledOnce(loggerErrorStub);
-            cryptoCreateVerifyStub.restore();
-        });
+			// eslint-disable-next-line no-extra-parens
+			const req = {header: headerName => (headerName === 'X-Signature' ? signature : undefined), body, rawBody};
+			const error = await verifyEventSignature(req, {}).catch(err => err);
+			assert.notStrictEqual(error, undefined);
+			assert.strictEqual(error.message, 'Failed public key verification');
+			sandbox.assert.calledOnce(cryptoCreateVerifyStub);
+			sandbox.assert.calledOnce(loggerErrorStub);
+			cryptoCreateVerifyStub.restore();
+		});
 
-        it('should pass if the public key verification succeeds', async () => {
-            const cryptoCreateVerifyStub = sandbox.spy(crypto, 'createVerify');
+		it('should pass if the public key verification succeeds', async () => {
+			const cryptoCreateVerifyStub = sandbox.spy(crypto, 'createVerify');
 
-            const body = {test: 'test', value: 14, here: 'there'};
-            const rawBody = JSON.stringify(body);
+			const body = {test: 'test', value: 14, here: 'there'};
+			const rawBody = JSON.stringify(body);
 
-            const sign = crypto.createSign('sha1WithRSAEncryption');
-            sign.update(rawBody);
-            const signature = sign.sign(privateKey, 'base64');
+			const sign = crypto.createSign('sha1WithRSAEncryption');
+			sign.update(rawBody);
+			const signature = sign.sign(privateKey, 'base64');
 
-            // eslint-disable-next-line no-extra-parens
-            const req = {header: headerName => (headerName === 'X-Signature' ? signature : undefined), body, rawBody};
-            const error = await verifyEventSignature(req, {}).catch(err => err);
-            assert.strictEqual(error, undefined);
-            sandbox.assert.calledOnce(cryptoCreateVerifyStub);
-            sandbox.assert.notCalled(loggerErrorStub);
-            cryptoCreateVerifyStub.restore();
-        });
-    });
+			// eslint-disable-next-line no-extra-parens
+			const req = {header: headerName => (headerName === 'X-Signature' ? signature : undefined), body, rawBody};
+			const error = await verifyEventSignature(req, {}).catch(err => err);
+			assert.strictEqual(error, undefined);
+			sandbox.assert.calledOnce(cryptoCreateVerifyStub);
+			sandbox.assert.notCalled(loggerErrorStub);
+			cryptoCreateVerifyStub.restore();
+		});
+	});
 });

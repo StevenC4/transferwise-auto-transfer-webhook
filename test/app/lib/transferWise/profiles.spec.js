@@ -4,27 +4,27 @@ const sandbox = require('sinon').createSandbox();
 const transferWise = require('../../../../app/lib/transferWise');
 
 describe('app/lib/transferWise/profiles', () => {
-    describe('get', () => {
-        let sendRequestStub;
+	describe('get', () => {
+		let sendRequestStub;
 
-        before(() => {
-            sendRequestStub = sandbox.stub(transferWise, '_sendRequest')
-        });
+		before(() => {
+			sendRequestStub = sandbox.stub(transferWise, '_sendRequest')
+		});
 
-        afterEach(() => {
-            sandbox.reset();
-        });
+		afterEach(() => {
+			sandbox.reset();
+		});
 
-        after(() => {
-            sandbox.restore();
-        });
+		after(() => {
+			sandbox.restore();
+		});
 
-        it('should call _sendRequest', async () => {
-            const response = 'response'
-            sendRequestStub.resolves(response);
-            const profilesResponse = await profiles.get().catch(err => err);
-            assert.strictEqual(profilesResponse, response);
-            sandbox.assert.calledWith(sendRequestStub, 'GET', '/v1/profiles');
-        });
-    });
+		it('should call _sendRequest', async () => {
+			const response = 'response'
+			sendRequestStub.resolves(response);
+			const profilesResponse = await profiles.get().catch(err => err);
+			assert.strictEqual(profilesResponse, response);
+			sandbox.assert.calledWith(sendRequestStub, 'GET', '/v1/profiles');
+		});
+	});
 });
