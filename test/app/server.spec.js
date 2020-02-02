@@ -8,6 +8,7 @@ const request = require('supertest');
 
 const appLogger = require('../../app/lib/loggers/app');
 const requestLogger = require('../../app/lib/loggers/request');
+const transferWiseLogger = require('../../app/lib/loggers/transferWise');
 
 const privateKeyBase64 = 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcGdJQkFBS0NBUUVBM2RJdlh0TVd3RFJ3d0VORlBRb3VXemNpMDAyUVF4Q3E5YnZQWklqdTZ3NDVYWXJOCnIyN3VJUmMrZDhRTVlhQjFPMDQxV082UWMrYkR6VnJzMXpPcWdwWU4vOVdCVGVvaGZaak1JSWd1SFUyZlBhQVQKQXRTVkpsZkZjbnFXbTNKajN5N1lFaENwZW54VDN3aFNPYTgwcnZ0eXptU1JkeTNjZExzanA0c2Fhb3M4NVhWYwpkbk56MzdaSC9UbDVZS3ZuSWxLK2dGRGlpTjdyalVOWWRTNnFib2NwUVN3TVlSclc2OVdBTTVDSEtielpSU3NNCnZ2SzZQSnFBTzQ1R2NSM2xrQmRqaG9kSkM3enJjZW9NSjJQdTdFWnRRNzAvTHd3ZzNmNlUrdGViTXJVY0w4Z3QKOXlzZkNOa0p0dmZFdHhXd3RSdG9KNHl6WnpYMVVZZjFPT0lzcHdJREFRQUJBb0lCQVFDODdjZHhBV053UTNvQgpGNHJDYVlpQUlsN2tFRDBlRWZVNnBVTUlRdVVUaVNMcy9Fc2g3OTZjaXBxbkVYRG1PZTkvbXFZdlg4bmpIWnFKCnJyYm91Rld6TWJFc3hLR0VSalZPTHpVMVJDZmF4NEVvME0xQWJPVzRLYXUvVEpBNFI5NnVlY3lJM200ckovZWIKa0EvUWw5ek1hTmdvMkZsWlk5TlFEUkJhSkUxVWpqczRqTE5zd0RqVDN4UnRra1EwaEIrU2dmRkRrTFM4bjd6cwp4TkxZemNXZ2paZEJDdXJJOEs5WjNybmxCUnFGS0Y4WnNXMThlYktXeTZMRUdqRlVHOWo0a3ppVmFUOUlZWmdaCnJDc1lNKzEwbzlodzd1TWtVeVlCK04yTlVHQUtqMy81WUVPZ2JudXhlZ3BVQlUzbks2eUNEMmRMOStJWXZwa1UKdERwZjcwQ1JBb0dCQVBSdmxaQzVKc3Rwb2pJSW92Z1NvT1J0Tys1d2c1d1RNcU9GYU8rM2RrbWYrMldxbGZPbgpjSkZxN0tQZDlsQ05qenprTkRtZ3BNSHppdTRZKzZPMnV3Tm92RTFvZVlxb0RiKzdockdscnVhRXV6OTNUTTZNCjhpT3k2SlVqQWR6bmNiSml5bmZGYjBrTDl2dm0rNGhOdW1HQzQ4aWVlWE9FSUpjY1JLa0MzZ05wQW9HQkFPaFEKdFNPbGkxWHd2UHBLOGFBeTU1Y3VCK0t5cTBIektoYkRTUWJYRDU3Vm1tc0FlajJRREJ6K3gyamVFMVJFcG1sYgpQaUJXYVhSNWFIYXRxUVlWVC84eVQ3MUJnR2tjRitzbFhwekg2S2hCZEJZMU9wNjExdVA2NU9rTFJTUks0NjFxCm13NkxrL0d3WUZzTGJleklhY3grYUxuL0ZVM01nYnBwekFiN0ZIMlBBb0dCQU5mMG9iSnNNbDh5bzQ4SzNGakoKdElZOEQ5LzRYZjZOWTRiZS9qZ1Q0WmpvbENaZFVRQWtwYXFFU2kvNGtYN1hvbjVNcSt0aUIwNG55azNUbXJjbwpZUStCQUNSdnNqb1RnWm9zcHJMYXk2eDBCaTdyU3R1TjRQd3pPNU5QaTN6TXFrSE5VRTREQy9BQWR5UlZEVk4rClFMV1grNEVxcWVpcUNsVVhMMzRXdjJsSkFvR0JBSnNZYnFZYXVoZ28vWEU0SVhJcktmUUROaDZCMjlYT3FuWEIKOEhvUmtBc2hYZE03NFdCQ1QrUDNzRmR4azRQNXhRT25kNldOS3lBb2diWmhuK3RBeFVTQmFUelhnd3dwUmtxbAppekd1UU1RNzFtMlJJYzZkWlphVWhNaVV6cGM1TENFMWY4bEpJLzhDR29JTjhsaFhRRkxXdmNJVzZ6a2laQ1Y0CnhrNk94NUkvQW9HQkFNSzYyWTc0M1p4aDZGamtUQ0JSVU5hV2xSNUIwRnZXY1htR3FHUUVaYUJVMDRUMEpDOTgKTHdaaHdtNzF0T3hVYjJmV1B2a0hUVFk4T0pSWkpGRXVNb2Q4cmpiOHBtSEFXL2RjN3NrR05iOEhsdUZxaHpIRgpOeTBLUk1YNlpaQ2VvS2w3V3JJelhzMmxOY0VVWjVGWFZXQkJicWtUVFBJNWZHZWY4eGxKMk14cgotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=';
 const privateKey = Buffer.from(privateKeyBase64, 'base64');
@@ -594,14 +595,11 @@ describe('app/server.js', () => {
                 sandbox.assert.calledOnce(requestInfoLoggerStub);
             });
         });
-        
-        describe('logMiddleware.logBalanceAccountEvent', () => {
-
-        });
     });
 
     describe('success', () => {
-        let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub;
+        let appErrorLoggerStub, createQuoteStub, createTransferStub, fundTransferStub, getAccountsStub, requestInfoLoggerStub, transferWiseInfoLogStub;
+        let shouldLog;
 
         before(() => {
             appErrorLoggerStub = sandbox.stub(appLogger, 'error');
@@ -610,10 +608,13 @@ describe('app/server.js', () => {
             fundTransferStub = sandbox.stub(transferWise.transfer, 'fund');
             getAccountsStub = sandbox.stub(transferWise.accounts, 'get');
             requestInfoLoggerStub = sandbox.stub(requestLogger, 'info');
+            transferWiseInfoLogStub = sandbox.stub(transferWiseLogger, 'info');
+            shouldLog = config.get('logs.transferWise.log');
         });
 
         afterEach(() => {
             sandbox.reset();
+            config.set('logs.transferWise.log', shouldLog);
         });
 
         after(() => {
@@ -665,6 +666,103 @@ describe('app/server.js', () => {
             sandbox.assert.calledOnce(fundTransferStub);
             sandbox.assert.calledWith(fundTransferStub, 15243, 'transfer id');
             sandbox.assert.notCalled(appErrorLoggerStub);
+            sandbox.assert.notCalled(transferWiseInfoLogStub);
+            sandbox.assert.calledOnce(requestInfoLoggerStub);
+        });
+
+        it('should info log when set to do so', async () => {
+            config.set('logs.transferWise.log', true);
+            const body = JSON.stringify(validBody);
+            getAccountsStub.resolves([
+                {id: 1234},
+                {
+                    id: 14141,
+                    currency: 'USD'
+                },
+                {id: 3456}
+            ]);
+            createQuoteStub.resolves({id: 'quote id'});
+            createTransferStub.resolves({id: 'transfer id'});
+            fundTransferStub.resolves({transferStatus: 'transfer status'});
+            await request(server)
+                .post('/balance-deposit')
+                .send(body)
+                .set('Accept', 'application/json')
+                .set('Content-Type', 'application/json')
+                .set('X-Signature', getSignature(body))
+                .expect(200);
+            sandbox.assert.calledOnce(getAccountsStub);
+            sandbox.assert.calledOnce(createQuoteStub);
+            sandbox.assert.calledWith(createQuoteStub, {
+                profile: 15243,
+                rateType: 'FIXED',
+                source: 'EUR',
+                sourceAmount: 1234,
+                target: 'USD',
+                type: 'BALANCE_PAYOUT'
+            });
+            sandbox.assert.calledOnce(createTransferStub);
+            sandbox.assert.calledWith(createTransferStub, sandbox.match(params => {
+                assert.notStrictEqual(params.customerTransactionId, undefined);
+                assert.deepStrictEqual(params.details, {
+                    reference: 'Other',
+                    sourceOfFunds: 'Other',
+                    transferPurpose: 'Other'
+                });
+                assert.strictEqual(params.quote, 'quote id');
+                assert.strictEqual(params.targetAccount, 14141);
+                return true;
+            }));
+            sandbox.assert.calledOnce(fundTransferStub);
+            sandbox.assert.calledWith(fundTransferStub, 15243, 'transfer id');
+            sandbox.assert.notCalled(appErrorLoggerStub);
+            sandbox.assert.callCount(transferWiseInfoLogStub, 5);
+            sandbox.assert.calledWith(transferWiseInfoLogStub.getCall(0), {
+                data: {
+                    amount: 1234,
+                    currency: 'EUR',
+                    occurred_at: '2020-02-03T15:31:05.013224Z',
+                    post_transaction_balance_amount: 5555,
+                    resource: {
+                        id: 24816,
+                        profile_id: 15243,
+                        type: 'balance-account'
+                    },
+                    transaction_type: 'credit'
+                },
+                event_type: 'balances#credit',
+                schema_version: '1.2.3',
+                sent_at: '2020-02-03T15:31:05.013224Z',
+                subscription_id: '51efc396-51c7-4173-bb71-c5ce5edaf43e'
+            });
+            sandbox.assert.calledWith(transferWiseInfoLogStub.getCall(1), {quote: {id: 'quote id'}});
+            sandbox.assert.calledWith(transferWiseInfoLogStub.getCall(2), {transfer: {id: 'transfer id'}});
+            sandbox.assert.calledWith(transferWiseInfoLogStub.getCall(3), {transferStatus: {transferStatus: 'transfer status'}});
+            sandbox.assert.calledWith(transferWiseInfoLogStub.getCall(4), {
+                balanceAccountEvent: {
+                    event: {
+                        data: {
+                            amount: 1234,
+                            currency: 'EUR',
+                            occurred_at: '2020-02-03T15:31:05.013224Z',
+                            post_transaction_balance_amount: 5555,
+                            resource: {
+                                id: 24816,
+                                profile_id: 15243,
+                                type: 'balance-account'
+                            },
+                            transaction_type: 'credit'
+                        },
+                        event_type: 'balances#credit',
+                        schema_version: '1.2.3',
+                        sent_at: '2020-02-03T15:31:05.013224Z',
+                        subscription_id: '51efc396-51c7-4173-bb71-c5ce5edaf43e'
+                    },
+                    quote: {id: 'quote id'},
+                    transfer: {id: 'transfer id'},
+                    transferStatus: {transferStatus: 'transfer status'}
+                }
+            });
             sandbox.assert.calledOnce(requestInfoLoggerStub);
         });
     });
