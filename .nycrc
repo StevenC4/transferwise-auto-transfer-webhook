@@ -1,6 +1,7 @@
 {
     "all": true,
     "exclude": [
+        "**/app/index.js",
         "**/app/lib/loggers/**",
         "**/node_modules/**",
         "**/test/**",

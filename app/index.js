@@ -23,7 +23,6 @@ httpServer.listen(port);
 httpServer.on('error', onError);
 httpServer.on('listening', onListening);
 process.on('SIGTERM', () => {
-	// setTimeout(gracefulShutdown, 18000, 'shutdownTimer');
 	setTimeout(gracefulShutdown, 0, 'shutdownTimer');
 });
 
