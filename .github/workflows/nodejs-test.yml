@@ -26,5 +26,6 @@ jobs:
       run: |
         npm ci
         npm run eslint
+        npm test
       env:
         APP_ENV: test
