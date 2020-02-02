@@ -202,13 +202,13 @@ const getTransferWiseApiKey = async () => {
 	}
 
 	// Get user's TransferWise borderless account / source account Id
-	const sourceAccountId = await promptForId(config.get('transferWise.account.source.id'), 'borderless account', async () => transferWise.borderlessAccounts.get(config.get('transferWise.profile.id')));
+	const sourceAccountId = await promptForId(config.get('transferWise.account.source.id'), 'borderless account', async () => await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id')));
 	if (sourceAccountId) {
 		config.set('transferWise.account.source.id', sourceAccountId);
 	}
 
 	// Get user's TransferWise recipient account / target account Id
-	const targetAccountId = await getTargetAccountId(config.get('transferWise.account.target.id'), 'recipient account', transferWise.accounts.get);
+	const targetAccountId = await promptForId(config.get('transferWise.account.target.id'), 'recipient account', transferWise.accounts.get);
 	if (targetAccountId) {
 		config.set('transferWise.account.target.id', targetAccountId);
 	}
