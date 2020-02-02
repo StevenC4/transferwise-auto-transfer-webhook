@@ -3,7 +3,7 @@ const validator = require('../lib/validator');
 const logger = require('../lib/loggers/transferWise');
 
 // https://api-docs.transferwise.com/#webhook-events-balance-deposit-event
-module.exports.balanceAccountEvent = (req, res, next) => {
+module.exports.balanceAccountEvent = (req, _res, next) => {
 	let error;
 
 	if (config.get('logs.transferWise.log')) {

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable max-depth */
@@ -7,7 +8,6 @@ dotenv.config();
 const config = require('../config');
 const prompts = require('prompts');
 const transferWise = require('../app/lib/transferWise');
-const util = require('util');
 
 // Utilities
 
@@ -44,15 +44,15 @@ const logWithTabLevel = (item, level) => {
 };
 
 const splitCamelCase = string => string
-		// Look for long acronyms and filter out the last letter
-		.replace(/(?<acronym>[A-Z]+)(?<nextWord>[A-Z][a-z])/gu, ' $<acronym> $<nextWord>')
-		// Look for lower-case letters followed by upper-case letters
-		.replace(/(?<lower>[a-z\d])(?<upper>[A-Z])/gu, '$<lower> $<upper>')
-		// Look for lower-case letters followed by numbers
-		.replace(/(?<lower>[a-zA-Z])(?<number>\d)/gu, '$<lower> $<number>')
-		.replace(/^./u, str => str.toUpperCase())
-		// Remove any white space left around the word
-		.trim();
+// Look for long acronyms and filter out the last letter
+	.replace(/(?<acronym>[A-Z]+)(?<nextWord>[A-Z][a-z])/gu, ' $<acronym> $<nextWord>')
+// Look for lower-case letters followed by upper-case letters
+	.replace(/(?<lower>[a-z\d])(?<upper>[A-Z])/gu, '$<lower> $<upper>')
+// Look for lower-case letters followed by numbers
+	.replace(/(?<lower>[a-zA-Z])(?<number>\d)/gu, '$<lower> $<number>')
+	.replace(/^./u, str => str.toUpperCase())
+// Remove any white space left around the word
+	.trim();
 
 // Gather user information
 
@@ -261,9 +261,9 @@ const getSourceAccountId = async () => {
 					type: 'select',
 					name: 'sourceAccount',
 					message: 'Select a source account Id to see more information about the borderless account:',
-					choices: sourceAccounts.map(sourceAccount => ({title: sourceAccount.id, value: sourceAccount.id}))
+					choices: sourceAccounts.map(account => ({title: account.id, value: account.id}))
 				});
-				const selectedSourceAccount = sourceAccounts.find(sourceAccount => sourceAccount.id === sourceAccount);
+				const selectedSourceAccount = sourceAccounts.find(account => account.id === sourceAccount);
 				console.clear();
 				logBoundary();
 				nestedLog(selectedSourceAccount);
@@ -407,56 +407,4 @@ const getTargetAccountId = async () => {
 	if (targetAccountId) {
 		config.set('transferWise.account.target.id', targetAccountId);
 	}
-})();
-
-// eslint-disable-next-line max-lines-per-function
-(async () => {
-	return;
-
-	// Obtain user's TransferWise source account Id
-	// eslint-disable-next-line no-unreachable
-	// Obtain user's TransferWise target account Id
-	if (!config.get('transferWise.account.target.id')) {
-		console.log('Discovering your linked recipient accounts...');
-		const accounts = await transferWise.accounts.get();
-		const likelyAccountIds = accounts.filter(account => account.type !== 'balance' && account.ownedByCustomer === true).map(account => account.id);
-		let recipientAccountId;
-		if (!accounts.length) {
-			console.log();
-			console.error('Error: you have no linked recipient accounts set up in TransferWise. Make sure you have chosen the correct profile Id.');
-			console.error('If you have chosen the correct profile, make sure to set up a recipient account.');
-			rl.close();
-			process.exit(1);
-		} else {
-			console.log(accounts);
-			if (!likelyAccountIds.length) {
-				console.log(`No likely recipient accounts found. A likely recipient account will not be of type "balance" and will have "ownedByCustomer: true".`);
-				recipientAccountId = await question(`If you would like to proceed anyway, look at the account${likelyAccountIds.length > 1 ? 's' : ''} listed above and enter its "id" field here: `);
-			} else {
-				if (likelyAccountIds.length === 1) {
-					console.log('The likely candidate for your intended recipient account is:', likelyAccountIds[0]);
-				} else {
-					console.log('Likely candidates for your intended recipient account are:');
-					likelyAccountIds.forEach(accountId => console.log('\t', accountId));
-				}
-				recipientAccountId = await question(`Review the list of accounts and likely candidates above and enter the "id" field from the desired target account here: `);
-			}
-		}
-
-		recipientAccountId = parseInt(recipientAccountId, 10);
-		if (recipientAccountId === NaN) {
-			console.log();
-			console.error('Error: The account Id you have entered is not an integer. TransferWise uses integer account ids.');
-			rl.close();
-			process.exit(1);
-		}
-
-		console.log();
-		config.set('transferWise.account.target.id', recipientAccountId);
-	}
-
-	rl.close();
-
-	// TODO: Write out to env file
-
 })();
