@@ -54,6 +54,110 @@ const splitCamelCase = string => string
 // Remove any white space left around the word
 	.trim();
 
+const promptForId = async (configEntityId, entityName, fetchEntities) => {
+	console.clear();
+
+	let shouldPromptForId = true;
+	console.log(configEntityId, entityName, fetchEntities);
+	const entities = await fetchEntities();
+
+	if (configEntityId) {
+		console.log(`You currently have a ${entityName} Id set (${configEntityId})`); // TODO: Dynamically say 'a' or 'an'
+		
+		const configEntity = entities.find(entity => entity.id === configEntityId);
+
+		if (!configEntity) {
+			console.log(`I could not find your selected ${entityName} Id among your transferWise ${entityName}s. Proceeding to overwrite your selected ${entityName} Id.`);
+		} else {
+			let overwriteResponse;
+			do {
+				// eslint-disable-next-line no-await-in-loop
+				overwriteResponse = await prompts({
+					type: 'select',
+					name: 'action',
+					message: `Do you want to overwrite this ${entityName} Id (${configEntityId})?`,
+					choices: [
+						{title: 'Yes', value: 'overwrite'},
+						{title: 'No', value: 'keep'},
+						{title: `View ${entityName} details`, value: 'show'}
+					],
+					initial: 1
+				});
+
+				if (overwriteResponse.action === 'show') {
+					console.clear();
+					logBoundary();
+					nestedLog(configEntity);
+					logBoundary();
+					console.log();
+				}
+			} while (overwriteResponse.action === 'show');
+
+			shouldPromptForId = overwriteResponse.action === 'overwrite';
+		}
+	}
+
+	let selectedEntityId;
+	if (shouldPromptForId) {
+		if (entities.length === 0) {
+			console.clear();
+			console.log(`I could not find any ${entityName}s for you. Please set up a ${entityName} first and then try again.`);
+			process.exit(1);
+		} else if (entities.length === 1) {
+			console.clear();
+			console.log(`I only found one ${entityName} for you:`);
+
+			logBoundary();
+			nestedLog(entities[0]);
+			logBoundary();
+
+			const {useEntity} = await prompts({
+				type: 'confirm',
+				name: 'useEntity',
+				message: `Is this the correct ${entityName} to use?`,
+				initial: true
+			});
+
+			if (useEntity) {
+				console.log(`OK! Using the ${entityName} and proceeding.`);
+
+				return entities[0].id;
+			} else {
+				console.log(`Understood. Please set up the correct ${entityName} first and then try again.`);
+				process.exit(1);
+			}
+		} else {
+			do {
+				console.clear();
+				const {entityId} = await prompts({
+					type: 'select',
+					name: 'entityId',
+					message: `Select a ${entityName} Id to see more details:`,
+					choices: entities.map(entity => ({title: entity.id, value: entity.id}))
+				});
+				const selectedEntity = entities.find(entity => entity.id === entityId);
+				console.clear();
+				logBoundary();
+				nestedLog(selectedEntity);
+				logBoundary();
+				console.log();
+				const {useSelectedEntity} = await prompts({
+					type: 'confirm',
+					name: 'useSelectedEntity',
+					message: `Would you like to select this as your ${entityName} Id?`,
+					initial: false
+				});
+
+				if (useSelectedEntity) {
+					selectedEntityId = entityId;
+				}
+			} while (!selectedEntityId);
+		}
+	}
+
+	return selectedEntityId;
+};
+
 // Gather user information
 
 const getTransferWiseApiKey = async () => {
@@ -84,326 +188,27 @@ const getTransferWiseApiKey = async () => {
 	return response.apiKey;
 };
 
-// eslint-disable-next-line max-lines-per-function
-const getProfileId = async () => {
-	console.clear();
-	let promptProfileIds = true;
-	const profiles = await transferWise.profiles.get();
-	if (config.get('transferWise.profile.id')) {
-		console.log(`You currently have a profile Id set (${config.get('transferWise.profile.id')}).`);
-
-		const prepopulatedProfile = profiles.find(profile => profile.id === config.get('transferWise.profile.id'));
-
-		if (!prepopulatedProfile) {
-			console.log('I could not find your selected profile Id among your transferWise profiles. Proceeding to overwrite your selected profile Id.');
-		} else {
-			let overwriteResponse;
-			do {
-				// eslint-disable-next-line no-await-in-loop
-				overwriteResponse = await prompts({
-					type: 'select',
-					name: 'action',
-					message: `Do you want to overwrite this value (${config.get('transferWise.profile.id')})?`,
-					choices: [
-						{title: 'Yes', value: 'overwrite'},
-						{title: 'No', value: 'keep'},
-						{title: 'View profile information', value: 'show'}
-					],
-					initial: 1
-				});
-
-				if (overwriteResponse.action === 'show') {
-					console.clear();
-					logBoundary();
-					nestedLog(prepopulatedProfile);
-					logBoundary();
-					console.log();
-				}
-			} while (overwriteResponse.action === 'show');
-
-			promptProfileIds = overwriteResponse.action === 'overwrite';
-		}
-	}
-
-	let selectedProfileId;
-	if (promptProfileIds) {
-		if (profiles.length === 0) {
-			console.clear();
-			console.log('I could not find any profiles for your account. Please set up a profile first and then try again.');
-			process.exit(1);
-		} else if (profiles.length === 1) {
-			console.clear();
-			console.log(`I only found one profile for your account:`);
-
-			logBoundary();
-			nestedLog(profiles[0]);
-			logBoundary();
-
-			const {useProfile} = await prompts({
-				type: 'confirm',
-				name: 'useProfile',
-				message: 'Is this the correct profile to use?',
-				initial: true
-			});
-
-			if (useProfile) {
-				console.log('OK! Using profile and proceeding.');
-
-				return profiles[0].id;
-			} else {
-				console.log('Understood. Please set up the correct profile first and then try again.');
-				process.exit(1);
-			}
-		} else {
-			do {
-				console.clear();
-				const {profileId} = await prompts({
-					type: 'select',
-					name: 'profileId',
-					message: 'Select a profile Id to see more information about the profile:',
-					choices: profiles.map(profile => ({title: profile.id, value: profile.id}))
-				});
-				const selectedProfile = profiles.find(profile => profile.id === profileId);
-				console.clear();
-				logBoundary();
-				nestedLog(selectedProfile);
-				logBoundary();
-				console.log();
-				const {useSelectedProfile} = await prompts({
-					type: 'confirm',
-					name: 'useSelectedProfile',
-					message: 'Would you like to select this as your profile Id?',
-					initial: false
-				});
-
-				if (useSelectedProfile) {
-					selectedProfileId = profileId
-				}
-			} while (!selectedProfileId);
-		}
-	}
-
-	return selectedProfileId;
-};
-
-const getSourceAccountId = async () => {
-	console.clear();
-	let promptSourceAccountId = true;
-	const sourceAccounts = await transferWise.borderlessAccounts.get(config.get('transferWise.profile.id'));
-	if (config.get('transferWise.account.source.id')) {
-		console.log(`You currently have a source account Id set (${config.get('transferWise.account.source.id')}).`);
-		const prepopulatedSourceAccount = sourceAccounts.find(sourceAccount => sourceAccount.id === config.get('transferWise.account.source.id'));
-
-		if (!prepopulatedSourceAccount) {
-			console.log('I could not find your selected source account Id among your transferWise borderless accounts. Proceeding to overwrite your selected source account Id.');
-		} else {
-			let overwriteResponse;
-			do {
-				// eslint-disable-next-line no-await-in-loop
-				overwriteResponse = await prompts({
-					type: 'select',
-					name: 'action',
-					message: `Do you want to overwrite this value (${config.get('transferWise.account.source.id')})?`,
-					choices: [
-						{title: 'Yes', value: 'overwrite'},
-						{title: 'No', value: 'keep'},
-						{title: 'View source account information', value: 'show'}
-					],
-					initial: 1
-				});
-
-				if (overwriteResponse.action === 'show') {
-					console.clear();
-					logBoundary();
-					nestedLog(prepopulatedSourceAccount);
-					logBoundary();
-					console.log();
-				}
-			} while (overwriteResponse.action === 'show');
-
-			promptSourceAccountId = overwriteResponse.action === 'overwrite';
-		}
-	}
-
-	let selectedSourceAccountId;
-	if (promptSourceAccountId) {
-		if (sourceAccounts.length === 0) {
-			console.clear();
-			console.log('I could not find any borderless accounts for your TransferWise account. Please set up a borderless account first and then try again.');
-			process.exit(1);
-		} else if (sourceAccounts.length === 1) {
-			console.clear();
-			console.log(`I only found one borderless account for your TransferWise account:`);
-
-			logBoundary();
-			nestedLog(sourceAccounts[0]);
-			logBoundary();
-
-			const {useSourceAccount} = await prompts({
-				type: 'confirm',
-				name: 'useSourceAccount',
-				message: 'Is this the correct borderless account to use?',
-				initial: true
-			});
-
-			if (useSourceAccount) {
-				console.log('OK! Using borderless account and proceeding.');
-
-				return sourceAccounts[0].id;
-			} else {
-				console.log('Understood. Please set up the correct borderless account first and then try again.');
-				process.exit(1);
-			}
-		} else {
-			do {
-				console.clear();
-				const {sourceAccount} = await prompts({
-					type: 'select',
-					name: 'sourceAccount',
-					message: 'Select a source account Id to see more information about the borderless account:',
-					choices: sourceAccounts.map(account => ({title: account.id, value: account.id}))
-				});
-				const selectedSourceAccount = sourceAccounts.find(account => account.id === sourceAccount);
-				console.clear();
-				logBoundary();
-				nestedLog(selectedSourceAccount);
-				logBoundary();
-				console.log();
-				const {useSelectedSourceAccount} = await prompts({
-					type: 'confirm',
-					name: 'useSelectedSourceAccount',
-					message: 'Would you like to select this as your source account Id?',
-					initial: false
-				});
-
-				if (useSelectedSourceAccount) {
-					selectedSourceAccountId = sourceAccount;
-				}
-			} while (!selectedSourceAccountId);
-		}
-	}
-
-	return selectedSourceAccountId;
-};
-
-const getTargetAccountId = async () => {
-	console.clear();
-	let promptTargetAccountId = true;
-	const targetAccounts = await transferWise.accounts.get();
-	if (config.get('transferWise.account.target.id')) {
-		console.log(`You currently have a target account Id set (${config.get('transferWise.account.target.id')}).`);
-		const prepopulatedTargetAccount = targetAccounts.find(targetAccount => targetAccount.id === config.get('transferWise.account.target.id'));
-
-		if (!prepopulatedTargetAccount) {
-			console.log('I could not find your selected target account Id among your transferWise accounts. Proceeding to overwrite your selected target account Id.');
-		} else {
-			let overwriteResponse;
-			do {
-				// eslint-disable-next-line no-await-in-loop
-				overwriteResponse = await prompts({
-					type: 'select',
-					name: 'action',
-					message: `Do you want to overwrite this value (${config.get('transferWise.account.target.id')})?`,
-					choices: [
-						{title: 'Yes', value: 'overwrite'},
-						{title: 'No', value: 'keep'},
-						{title: 'View target account information', value: 'show'}
-					],
-					initial: 1
-				});
-
-				if (overwriteResponse.action === 'show') {
-					console.clear();
-					logBoundary();
-					nestedLog(prepopulatedTargetAccount);
-					logBoundary();
-					console.log();
-				}
-			} while (overwriteResponse.action === 'show');
-
-			promptTargetAccountId = overwriteResponse.action === 'overwrite';
-		}
-	}
-
-	let selectedTargetAccountId;
-	if (promptTargetAccountId) {
-		if (targetAccounts.length === 0) {
-			console.clear();
-			console.log('I could not find any recipient accounts for your TransferWise account. Please set up a recipient account first and then try again.');
-			process.exit(1);
-		} else if (targetAccounts.length === 1) {
-			console.clear();
-			console.log(`I only found one recipient account for your TransferWise account:`);
-
-			logBoundary();
-			nestedLog(targetAccounts[0]);
-			logBoundary();
-
-			const {useTargetAccount} = await prompts({
-				type: 'confirm',
-				name: 'useTargetAccount',
-				message: 'Is this the correct recipient account to use?',
-				initial: true
-			});
-
-			if (useTargetAccount) {
-				console.log('OK! Using recipient account and proceeding.');
-
-				return targetAccounts[0].id;
-			} else {
-				console.log('Understood. Please set up the correct recipient account first and then try again.');
-				process.exit(1);
-			}
-		} else {
-			do {
-				console.clear();
-				const {targetAccountId} = await prompts({
-					type: 'select',
-					name: 'targetAccountId',
-					message: 'Select a target account Id to see more information about the recipient account:',
-					choices: targetAccounts.map(targetAccount => ({title: targetAccount.id, value: targetAccount.id}))
-				});
-				const selectedTargetAccount = targetAccounts.find(targetAccount => targetAccount.id === targetAccountId);
-				console.clear();
-				logBoundary();
-				nestedLog(selectedTargetAccount);
-				logBoundary();
-				console.log();
-				const {useSelectedTargetAccount} = await prompts({
-					type: 'confirm',
-					name: 'useSelectedTargetAccount',
-					message: 'Would you like to select this as your target account Id?',
-					initial: false
-				});
-
-				if (useSelectedTargetAccount) {
-					selectedTargetAccountId = targetAccountId;
-				}
-			} while (!selectedTargetAccountId);
-		}
-	}
-
-	return selectedTargetAccountId;
-};
-
 (async () => {
+	// Get user's TransferWise API key
 	const apiKey = await getTransferWiseApiKey();
 	if (apiKey) {
 		config.set('transferWise.api.key', apiKey);
 	}
 
 	// Get user's TransferWise profile Id
-	const profileId = await getProfileId();
+	const profileId = await promptForId(config.get('transferWise.profile.id'), 'profile', transferWise.profiles.get);
 	if (profileId) {
 		config.set('transferWise.profile.id', profileId);
 	}
 
-	const sourceAccountId = await getSourceAccountId();
+	// Get user's TransferWise borderless account / source account Id
+	const sourceAccountId = await promptForId(config.get('transferWise.account.source.id'), 'borderless account', async () => transferWise.borderlessAccounts.get(config.get('transferWise.profile.id')));
 	if (sourceAccountId) {
 		config.set('transferWise.account.source.id', sourceAccountId);
 	}
 
-	const targetAccountId = await getTargetAccountId();
+	// Get user's TransferWise recipient account / target account Id
+	const targetAccountId = await getTargetAccountId(config.get('transferWise.account.target.id'), 'recipient account', transferWise.accounts.get);
 	if (targetAccountId) {
 		config.set('transferWise.account.target.id', targetAccountId);
 	}
