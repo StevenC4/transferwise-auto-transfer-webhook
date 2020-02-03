@@ -108,7 +108,7 @@ const config = convict({
 				doc: 'A personal transferwise API key',
 				format: String,
 				default: '',
-				env: 'TRANFERWISE_API_TOKEN'
+				env: 'TRANSFERWISE_API_TOKEN'
 			}
 		},
 		balance: {

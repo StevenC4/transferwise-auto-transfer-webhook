@@ -28,7 +28,7 @@ As of the publishing of this repo, the following are requirements for creating a
 ### Getting Started
 
 1. Clone the github repository.
-2. Log into your TransferWise account and generate an API token. Paste the token into a .env file (should be ignored by git), using the [`TRANFERWISE_API_TOKEN`](#TRANFERWISE_API_TOKEN) environment variable.
+2. Log into your TransferWise account and generate an API token. Paste the token into a .env file (should be ignored by git), using the [`TRANSFERWISE_API_TOKEN`](#TRANSFERWISE_API_TOKEN) environment variable.
 3. In your terminal, from the project root, run `npm run get-profile`. Copy the `id` field from the response and set it in the .env file for the [TRANSFERWISE_PROFILE_ID](#TRANSFERWISE_PROFILE_ID) environment variable.
 4. In your terminal, run `npm run get-accounts`. In the response, find the account that you want to use as your target account for your automatic transfers and copy the `id` field into the .env file for the [TRANSFERWISE_TARGET_ACCOUNT_ID](#TRANSFERWISE_TARGET_ACCOUNT_ID) environment variable.
 5. In your terminal, run `npm run get-borderless-accounts`. In the response, find the account and balance that you want to use as the source balance for your automatic transfers. Copy the `id` field from the correct balance into the .env file for the [TRANSFERWISE_SOURCE_BALANCE_ID](#TRANSFERWISE_SOURCE_BALANCE_ID) environment variable.
@@ -82,7 +82,7 @@ The ID of the source TransferWise balance from which money will be automatically
 
 You can discover this by running `npm run get-borderless-accounts` and looking over the list of balances you get back.
 
-#### `TRANFERWISE_API_TOKEN`
+#### `TRANSFERWISE_API_TOKEN`
 The TransferWise API token you generated from your profile page.
 
 #### `TRANSFERWISE_PROFILE_ID`

@@ -222,7 +222,6 @@ const getTransferWiseApiKey = async () => {
 		envFile = fs.readFileSync(envFilePath, 'utf8');
 	}
 
-	let envFile = fs.readFileSync(envFilePath, 'utf8');
 	if (apiKey) {
 		const apiKeyRegex = /^\s*(?<key>TRANSFERWISE_API_TOKEN=).*$/mu;
 		if (apiKeyRegex.test(envFile)) {
@@ -256,7 +255,11 @@ const getTransferWiseApiKey = async () => {
 		}
 	}
 	
+	// Remove leading newline from file if present
+	envFile = envFile.replace(/^\n/gu, '');
+
 	// Write out to file - overwrite contents
+	console.clear();
 	console.log('Writing to the .env file');
 	fs.writeFileSync(envFilePath, envFile);
 	console.log('Done writing file');
