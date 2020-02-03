@@ -3,9 +3,12 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable max-depth */
 /* eslint-disable dot-location */
+/* eslint-disable no-sync */
 const dotenv = require('dotenv');
 dotenv.config();
 const config = require('../config');
+const fs = require('fs');
+const path = require('path');
 const prompts = require('prompts');
 const transferWise = require('../app/lib/transferWise');
 
@@ -58,7 +61,6 @@ const promptForId = async (configEntityId, entityName, fetchEntities) => {
 	console.clear();
 
 	let shouldPromptForId = true;
-	console.log(configEntityId, entityName, fetchEntities);
 	const entities = await fetchEntities();
 
 	if (configEntityId) {
@@ -212,4 +214,50 @@ const getTransferWiseApiKey = async () => {
 	if (targetAccountId) {
 		config.set('transferWise.account.target.id', targetAccountId);
 	}
+
+	const envFilePath = path.resolve(__dirname, '..', '.env');
+	
+	let envFile = '';
+	if (fs.existsSync(envFilePath)) {
+		envFile = fs.readFileSync(envFilePath, 'utf8');
+	}
+
+	let envFile = fs.readFileSync(envFilePath, 'utf8');
+	if (apiKey) {
+		const apiKeyRegex = /^\s*(?<key>TRANSFERWISE_API_TOKEN=).*$/mu;
+		if (apiKeyRegex.test(envFile)) {
+			envFile = envFile.replace(apiKeyRegex, `$<key>${apiKey}`);
+		} else {
+			envFile = envFile.concat(`\nTRANSFERWISE_API_TOKEN=${apiKey}`);
+		}
+	}
+	if (profileId) {
+		const profileIdRegex = /^\s*(?<key>TRANSFERWISE_PROFILE_ID=).*$/mu;
+		if (profileIdRegex.test(envFile)) {
+			envFile = envFile.replace(profileIdRegex, `$<key>${profileId}`);
+		} else {
+			envFile = envFile.concat(`\nTRANSFERWISE_PROFILE_ID=${profileId}`);
+		}
+	}
+	if (sourceAccountId) {
+		const sourceAccountIdRegex = /^\s*(?<key>TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID=).*$/mu;
+		if (sourceAccountIdRegex.test(envFile)) {
+			envFile = envFile.replace(sourceAccountIdRegex, `$<key>${sourceAccountId}`);
+		} else {
+			envFile = envFile.concat(`\nTRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID=${sourceAccountId}`);
+		}
+	}
+	if (targetAccountId) {
+		const targetAccountIdRegex = /^\s*(?<key>TRANSFERWISE_TARGET_ACCOUNT_ID=).*$/mu;
+		if (targetAccountIdRegex.test(envFile)) {
+			envFile = envFile.replace(targetAccountIdRegex, `$<key>${targetAccountId}`);
+		} else {
+			envFile = envFile.concat(`\nTRANSFERWISE_TARGET_ACCOUNT_ID=${targetAccountId}`);
+		}
+	}
+	
+	// Write out to file - overwrite contents
+	console.log('Writing to the .env file');
+	fs.writeFileSync(envFilePath, envFile);
+	console.log('Done writing file');
 })();
