@@ -1,4 +1,4 @@
-.PHONY: build tag push logs update-restart build-update-restart bu-up-re up-re up-re-dev
+.PHONY: init build tag push logs update-restart build-update-restart bu-up-re up-re up-re-dev
 
 REPO ?= stevenc4/transferwise-webhook
 DATETIME = $(shell date +%Y%m%d)
@@ -31,3 +31,6 @@ up-re-dev:
 	docker-compose -f docker-compose.dev.yaml build
 	docker-compose -f docker-compose.dev.yaml down
 	docker-compose -f docker-compose.dev.yaml up -d
+
+init:
+	docker run -it --rm -v ./config/:/usr/src/app/config/custom stevenc4/transferwise-webhook:latest npm init

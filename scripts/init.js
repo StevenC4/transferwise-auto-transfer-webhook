@@ -214,53 +214,59 @@ const getTransferWiseApiKey = async () => {
 	if (targetAccountId) {
 		config.set('transferWise.account.target.id', targetAccountId);
 	}
-
-	const envFilePath = path.resolve(__dirname, '..', '.env');
 	
-	let envFile = '';
-	if (fs.existsSync(envFilePath)) {
-		envFile = fs.readFileSync(envFilePath, 'utf8');
-	}
-
+	const newConfig = {};
 	if (apiKey) {
-		const apiKeyRegex = /^\s*(?<key>TRANSFERWISE_API_TOKEN=).*$/mu;
-		if (apiKeyRegex.test(envFile)) {
-			envFile = envFile.replace(apiKeyRegex, `$<key>${apiKey}`);
-		} else {
-			envFile = envFile.concat(`\nTRANSFERWISE_API_TOKEN=${apiKey}`);
-		}
+		newConfig = {
+			transferWise: {
+				api: {
+					key: apiKey
+				}
+			}
+		};
 	}
+
 	if (profileId) {
-		const profileIdRegex = /^\s*(?<key>TRANSFERWISE_PROFILE_ID=).*$/mu;
-		if (profileIdRegex.test(envFile)) {
-			envFile = envFile.replace(profileIdRegex, `$<key>${profileId}`);
-		} else {
-			envFile = envFile.concat(`\nTRANSFERWISE_PROFILE_ID=${profileId}`);
+		if (!newConfig.hasOwnProperty('transferWise')) {
+			newConfig.transferWise = {};
 		}
+
+		newConfig.transferWise.profile = {
+			id: profileId
+		};
 	}
+
 	if (sourceAccountId) {
-		const sourceAccountIdRegex = /^\s*(?<key>TRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID=).*$/mu;
-		if (sourceAccountIdRegex.test(envFile)) {
-			envFile = envFile.replace(sourceAccountIdRegex, `$<key>${sourceAccountId}`);
-		} else {
-			envFile = envFile.concat(`\nTRANSFERWISE_SOURCE_BORDERLESS_ACCOUNT_ID=${sourceAccountId}`);
+		if (!newConfig.hasOwnProperty('transferWise')) {
+			newConfig.transferWise = {};
 		}
+
+		newConfig.transferWise.account = {
+			source: {
+				id: sourceAccountId
+			}
+		};
 	}
+
 	if (targetAccountId) {
-		const targetAccountIdRegex = /^\s*(?<key>TRANSFERWISE_TARGET_ACCOUNT_ID=).*$/mu;
-		if (targetAccountIdRegex.test(envFile)) {
-			envFile = envFile.replace(targetAccountIdRegex, `$<key>${targetAccountId}`);
-		} else {
-			envFile = envFile.concat(`\nTRANSFERWISE_TARGET_ACCOUNT_ID=${targetAccountId}`);
+		if (!newConfig.hasOwnProperty('transferWise')) {
+			newConfig.transferWise = {};
 		}
+
+		if (!newConfig.transferWise.hasOwnProperty('account')) {
+			newConfig.transferWise.account = {};
+		}
+
+		newConfig.transferWise.account.target = {
+			id: sourceAccountId
+		};
 	}
-	
-	// Remove leading newline from file if present
-	envFile = envFile.replace(/^\n/gu, '');
 
 	// Write out to file - overwrite contents
+	const customConfigFilePath = path.resolve(__dirname, '..', 'config/custom', 'config.json');
+	const fileContents = JSON.stringify(newConfig, null, 4);
 	console.clear();
-	console.log('Writing to the .env file');
-	fs.writeFileSync(envFilePath, envFile);
+	console.log(`Writing to ${customConfigFilePath}`);
+	fs.writeFileSync(customConfigFilePath, fileContents);
 	console.log('Done writing file');
 })();

@@ -159,6 +159,12 @@ if (fs.existsSync(envFilePath)) {
 	config.loadFile(envFilePath);
 }
 
+const customFilePath = path.resolve(__dirname, `custom/config.json`);
+// eslint-disable-next-line no-sync
+if (fs.existsSync(customFilePath)) {
+	config.loadFile(customFilePath);
+}
+
 config.validate({allowed: 'strict'});
 
 module.exports = config;
