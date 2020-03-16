@@ -1,6 +1,6 @@
 {
   "name": "transferwise-webhook",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "An express server to handle transferwise webhook calls and make transferwise API calls",
   "main": "app/index.js",
   "scripts": {
